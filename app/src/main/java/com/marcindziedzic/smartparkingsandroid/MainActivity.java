@@ -7,6 +7,12 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
 import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
@@ -31,12 +37,52 @@ public class MainActivity extends AppCompatActivity {
     private MicroRuntimeServiceBinder microRuntimeServiceBinder;
     private ServiceConnection serviceConnection;
 
+    private EditText agentNameTV;
+
+    private Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        connectToService();
+        agentNameTV = findViewById(R.id.agentNameText);
+        agentNameTV.addTextChangedListener(agentNameTextWatcher);
+
+        button = findViewById(R.id.nextButton);
+        button.setEnabled(false);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connectToService();
+                openMapsActivity();
+            }
+        });
+
+    }
+
+    private TextWatcher agentNameTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (agentNameTV.getText() != null && !agentNameTV.getText().toString().equals("")) {
+                button.setEnabled(true);
+            } else {
+                button.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
+    private void openMapsActivity() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
     }
 
     private void connectToService() {
@@ -89,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(Void thisIsNull) {
                 // Split container startup successful
                 logger.log(Level.INFO, "Successfully start of the container...");
-                startAgent("android", agentStartupCallback);
+                startAgent(agentNameTV.getText().toString(), agentStartupCallback);
             }
 
             @Override

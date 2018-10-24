@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SmartParkingsAndroid</string>
+    <string name="type_agent_name">Podaj nazwę agenta</string>
+    <string name="agent_name">Agent Name</string>
+    <string name="next">Dalej</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
