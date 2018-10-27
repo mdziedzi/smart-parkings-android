@@ -1,5 +1,6 @@
 package com.marcindziedzic.smartparkingsandroid;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
 import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
 
@@ -34,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Logger logger = Logger.getJADELogger(this.getClass().getName());
 
+    private static final String TAG = "MapsActivity";
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+
     private MicroRuntimeServiceBinder microRuntimeServiceBinder;
     private ServiceConnection serviceConnection;
 
@@ -46,19 +54,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        agentNameTV = findViewById(R.id.agentNameText);
-        agentNameTV.addTextChangedListener(agentNameTextWatcher);
 
-        button = findViewById(R.id.nextButton);
-        button.setEnabled(false);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                connectToService();
-                openMapsActivity();
-            }
-        });
+        if (isServiceOK()) {
 
+            agentNameTV = findViewById(R.id.agentNameText);
+            agentNameTV.addTextChangedListener(agentNameTextWatcher);
+
+            button = findViewById(R.id.nextButton);
+            button.setEnabled(false);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    connectToService();
+                    openMapsActivity();
+                }
+            });
+        }
+
+    }
+
+    public boolean isServiceOK() {
+        Log.d(TAG, "isServiceOK: checking google services version");
+        int aviable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+        if (aviable == ConnectionResult.SUCCESS) {
+            Log.d(TAG, "isServiceOK: Google Play Services is working");
+            return true;
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(aviable)) {
+            Log.d(TAG, "isServiceOK: error occured but we can fix it");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, aviable, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        } else {
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
     private TextWatcher agentNameTextWatcher = new TextWatcher() {
