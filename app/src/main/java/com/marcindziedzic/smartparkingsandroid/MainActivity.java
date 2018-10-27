@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // only for dev purposes
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
 
         if (isServiceOK()) {
 
