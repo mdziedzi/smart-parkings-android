@@ -42,6 +42,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     private Codec codec = new SLCodec();
     private Ontology ontology = SmartParkingsOntology.getInstance();
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
+    private ParkingOffer bestParking;
 
     @Override
     protected void setup() {
@@ -179,6 +180,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
                 // Accept the proposal of the best proposer
                 if (accept != null) {
                     System.out.println("Accepting proposal " + bestProposal + " from responder " + bestProposer.getName());
+                    bestParking = bestProposal;
                     accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 }
             }
@@ -231,6 +233,11 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
 
     public ArrayList<ParkingOffer> getParkings() {
         return parkings;
+    }
+
+    @Override
+    public ParkingOffer getBestParking() {
+        return bestParking;
     }
 }
 

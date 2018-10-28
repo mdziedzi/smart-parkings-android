@@ -4,4 +4,6 @@
     <string name="agent_name">Agent Name</string>
     <string name="next">Dalej</string>
     <string name="title_activity_maps">Map</string>
+    <string name="get_directions">PROWADŹ DO</string>
+    <string name="park_now">Zaparkuj</string>
 </resources>

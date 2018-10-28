@@ -1,7 +1,6 @@
 package com.marcindziedzic.smartparkingsandroid;
 
 import android.Manifest;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -11,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -20,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +30,7 @@ import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import jade.core.MicroRuntime;
 import jade.wrapper.ControllerException;
@@ -50,10 +53,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     ImageButton recentreButton;
     ImageButton settingsButton;
+    Button parkNowButton;
+
     private Location mLocation;
 
     String nickname;
     DriverManagerInterface driverManagerInterface;
+    private ParkingOffer choosenParking;
+    private ArrayList<Marker> parkingMarkers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +93,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "onCreate:  server error");
         }
 
+        parkNowButton = findViewById(R.id.parkNowButton);
+        parkNowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosenParking = driverManagerInterface.getBestParking();
+                showProposal(choosenParking);
+            }
+        });
+
 //        myReceiver = new MyReceiver();
 //
 //        IntentFilter refreshChatFilter = new IntentFilter();
 //        refreshChatFilter.addAction("jade.demo.chat.REFRESH_CHAT");
 //        registerReceiver(myReceiver, refreshChatFilter);
 
+    }
+
+    private void showProposal(ParkingOffer choosenParking) {
+        final LatLng latlog = new LatLng(choosenParking.getLat(), choosenParking.getLon());
+        Iterator<Marker> markerIterator = parkingMarkers.iterator();
+        Marker currentMarker;
+        while (markerIterator.hasNext()) {
+            currentMarker = markerIterator.next();
+            if (currentMarker.getPosition().equals(latlog)) {
+                parkingMarkers.remove(currentMarker);
+                currentMarker.remove();
+                break;
+            }
+        }
+        parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(latlog).title(String.valueOf(choosenParking.getPrice())).snippet("to jest snippet").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
     }
 
     @Override
@@ -116,7 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showAviableParkings(ArrayList<ParkingOffer> parkings) {
         for (ParkingOffer p : parkings) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice())));
+            parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice()))));
         }
     }
 

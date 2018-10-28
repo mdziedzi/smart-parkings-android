@@ -7,4 +7,6 @@ import java.util.ArrayList;
 public interface DriverManagerInterface {
 
     ArrayList<ParkingOffer> getParkings();
+
+    ParkingOffer getBestParking();
 }
