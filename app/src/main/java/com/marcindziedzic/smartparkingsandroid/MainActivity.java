@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     connectToService();
-                    openMapsActivity();
+//                    openMapsActivity();
                 }
             });
         }
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openMapsActivity() {
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("nickname", agentNameTV.getText().toString());
         startActivity(intent);
     }
 
@@ -187,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             agentStartupCallback.onSuccess(MicroRuntime
                                     .getAgent(nickname));
+                            openMapsActivity();
                         } catch (ControllerException e) {
                             // Should never happen
                             agentStartupCallback.onFailure(e);

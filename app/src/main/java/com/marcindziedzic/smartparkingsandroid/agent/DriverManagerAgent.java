@@ -4,6 +4,7 @@ import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -20,7 +21,6 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
-import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
 
@@ -28,7 +28,7 @@ import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.DISTA
 import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.PRICE_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
-public class DriverManagerAgent extends Agent {
+public class DriverManagerAgent extends Agent implements DriverManagerInterface {
 
 
     private Localization localization;
@@ -41,6 +41,7 @@ public class DriverManagerAgent extends Agent {
 
     private Codec codec = new SLCodec();
     private Ontology ontology = SmartParkingsOntology.getInstance();
+    private ArrayList<ParkingOffer> parkings = new ArrayList<>();
 
     @Override
     protected void setup() {
@@ -56,7 +57,7 @@ public class DriverManagerAgent extends Agent {
                     + " lon: " + this.localization.getLongitude());
         }
 
-//        this.driverManagerGUI = new DriverManagerGUI(this);
+        registerO2AInterface(DriverManagerInterface.class, this);
 
         // Register the parking service in the yellow pages
         DFAgentDescription myTemplate = new DFAgentDescription();
@@ -127,6 +128,7 @@ public class DriverManagerAgent extends Agent {
                 nResponders--;
             }
 
+            @SuppressWarnings("unchecked")
             protected void handleAllResponses(Vector responses, Vector acceptances) {
                 if (responses.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
@@ -152,14 +154,13 @@ public class DriverManagerAgent extends Agent {
                         ContentElement content = null;
                         try {
                             content = getContentManager().extractContent(msg);
-                        } catch (Codec.CodecException e1) {
-                            e1.printStackTrace();
-                        } catch (OntologyException e1) {
+                        } catch (Codec.CodecException | OntologyException e1) {
                             e1.printStackTrace();
                         }
 
                         if (content instanceof ParkingOffer) {
                             ParkingOffer currProposal = (ParkingOffer) content;
+                            parkings.add(currProposal);
                             if (bestProposal == null) {
                                 bestProposal = currProposal;
                             }
@@ -227,8 +228,9 @@ public class DriverManagerAgent extends Agent {
         System.out.println("Driver-agent " + getAID().getName() + " terminating.");
     }
 
-    protected void onGuiEvent(GuiEvent guiEvent) {
 
+    public ArrayList<ParkingOffer> getParkings() {
+        return parkings;
     }
 }
 

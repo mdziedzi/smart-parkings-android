@@ -1,6 +1,7 @@
 package com.marcindziedzic.smartparkingsandroid;
 
 import android.Manifest;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -20,8 +21,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
+import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
+
+import java.util.ArrayList;
+
+import jade.core.MicroRuntime;
+import jade.wrapper.ControllerException;
+import jade.wrapper.StaleProxyException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -42,6 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ImageButton settingsButton;
     private Location mLocation;
 
+    String nickname;
+    DriverManagerInterface driverManagerInterface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +73,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
         getLocationPermission();
+
+        nickname = getIntent().getStringExtra("nickname");
+
+        try {
+            driverManagerInterface = MicroRuntime.getAgent(nickname)
+                    .getO2AInterface(DriverManagerInterface.class);
+        } catch (StaleProxyException e) {
+            Log.e(TAG, "onCreate: internal error");
+        } catch (ControllerException e) {
+            Log.e(TAG, "onCreate:  server error");
+        }
+
+//        myReceiver = new MyReceiver();
+//
+//        IntentFilter refreshChatFilter = new IntentFilter();
+//        refreshChatFilter.addAction("jade.demo.chat.REFRESH_CHAT");
+//        registerReceiver(myReceiver, refreshChatFilter);
+
     }
 
     @Override
@@ -78,6 +108,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+            showAviableParkings(driverManagerInterface.getParkings());
+
+        }
+    }
+
+    private void showAviableParkings(ArrayList<ParkingOffer> parkings) {
+        for (ParkingOffer p : parkings) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice())));
         }
     }
 
@@ -141,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null) {
                                 mLocation = currentLocation;
+                                Log.d(TAG, "onComplete: mLocation: " + mLocation.getLatitude() + "; " + mLocation.getLongitude());
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
                             } else {
                                 Toast.makeText(MapsActivity.this, "Error during fetching location", Toast.LENGTH_SHORT).show();
