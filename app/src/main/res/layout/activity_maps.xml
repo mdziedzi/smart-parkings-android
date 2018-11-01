@@ -14,14 +14,14 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        map:layout_constraintBottom_toTopOf="@+id/button"
+        map:layout_constraintBottom_toTopOf="@+id/navigateToButton"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
         tools:context=".MapsActivity" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/navigateToButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/get_directions"
@@ -36,7 +36,7 @@
         android:text="@string/park_now"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button" />
+        app:layout_constraintStart_toEndOf="@+id/navigateToButton" />
 
     <ImageButton
         android:id="@+id/settingsButton"
@@ -57,5 +57,16 @@
         android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/driveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="NAWIGUJ"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/navigateToButton"
+        app:layout_constraintEnd_toEndOf="@+id/parkNowButton"
+        app:layout_constraintStart_toStartOf="@+id/navigateToButton" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,8 +1,10 @@
 package com.marcindziedzic.smartparkingsandroid;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -54,6 +56,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ImageButton recentreButton;
     ImageButton settingsButton;
     Button parkNowButton;
+    Button navigateToButton;
+    Button driveButton;
 
     private Location mLocation;
 
@@ -93,6 +97,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "onCreate:  server error");
         }
 
+        driveButton = findViewById(R.id.driveButton);
+        driveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + choosenParking.getLat() + "," + choosenParking.getLon() + "&mode=d");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+
+            }
+        });
+
+        navigateToButton = findViewById(R.id.navigateToButton);
+
         parkNowButton = findViewById(R.id.parkNowButton);
         parkNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,18 +129,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showProposal(ParkingOffer choosenParking) {
-        final LatLng latlog = new LatLng(choosenParking.getLat(), choosenParking.getLon());
-        Iterator<Marker> markerIterator = parkingMarkers.iterator();
-        Marker currentMarker;
-        while (markerIterator.hasNext()) {
-            currentMarker = markerIterator.next();
-            if (currentMarker.getPosition().equals(latlog)) {
-                parkingMarkers.remove(currentMarker);
-                currentMarker.remove();
-                break;
-            }
-        }
-        parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(latlog).title(String.valueOf(choosenParking.getPrice())).snippet("to jest snippet").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
+        final LatLng latLng = new LatLng(choosenParking.getLat(), choosenParking.getLon());
+        removeMarker(latLng);
+        addMarkerOfChosenParking(latLng);
+        prepareButtonsForProposal();
     }
 
     @Override
@@ -238,5 +248,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapsActivity.this);
+    }
+
+    private void prepareButtonsForProposal() {
+        parkNowButton.setEnabled(false);
+        navigateToButton.setEnabled(false);
+        driveButton.setVisibility(View.VISIBLE);
+    }
+
+    private void addMarkerOfChosenParking(LatLng latLng) {
+        parkingMarkers.add(mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(String.valueOf(choosenParking.getPrice()))
+                .snippet("to jest snippet")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        ));
+    }
+
+    private void removeMarker(LatLng latLng) {
+        Iterator<Marker> markerIterator = parkingMarkers.iterator();
+        Marker currentMarker;
+        while (markerIterator.hasNext()) {
+            currentMarker = markerIterator.next();
+            if (currentMarker.getPosition().equals(latLng)) {
+                parkingMarkers.remove(currentMarker);
+                currentMarker.remove();
+                break;
+            }
+        }
     }
 }
