@@ -1,5 +1,9 @@
 package com.marcindziedzic.smartparkingsandroid.agent;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
 import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
@@ -30,6 +34,7 @@ import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.TIMEO
 
 public class DriverManagerAgent extends Agent implements DriverManagerInterface {
 
+    private static final String TAG = "DriverManagerAgent";
 
     private Localization localization;
 
@@ -44,6 +49,8 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
 
+    private Context context;
+
     @Override
     protected void setup() {
 
@@ -53,9 +60,16 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
 
         Object[] args = getArguments();
         if (args != null) {
-            if (args.length > 0) this.localization = (Localization) args[0];
-            System.out.println("Created DriverManagerAgent " + getAID().getName() + " with lat: " + this.localization.getLatitude()
-                    + " lon: " + this.localization.getLongitude());
+            if(args.length > 0) {
+                if (args[0] instanceof Context) {
+                    context = (Context) args[0];
+                }
+                if (args.length > 1) {
+                    this.localization = (Localization) args[1];
+                    System.out.println("Created DriverManagerAgent " + getAID().getName() + " with lat: " + this.localization.getLatitude()
+                            + " lon: " + this.localization.getLongitude());
+                }
+            }
         }
 
         registerO2AInterface(DriverManagerInterface.class, this);
@@ -183,12 +197,20 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
                     bestParking = bestProposal;
                     accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 }
+                sendParkingDataReadyBroadcast();
             }
 
             protected void handleInform(ACLMessage inform) {
                 System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
             }
         });
+    }
+
+    private void sendParkingDataReadyBroadcast() {
+        Intent broadcast = new Intent();
+        broadcast.setAction("PARKING_DATA_READY");
+        Log.d(TAG, "setup: Sending broadcast" + broadcast.getAction());
+        context.sendBroadcast(broadcast);
     }
 
     // todo: replace this dummy decision algorithm
@@ -229,8 +251,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         // Printout a dismissal message
         System.out.println("Driver-agent " + getAID().getName() + " terminating.");
     }
-
-
+    
     public ArrayList<ParkingOffer> getParkings() {
         return parkings;
     }

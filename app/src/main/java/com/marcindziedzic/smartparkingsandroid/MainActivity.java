@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
     private void startContainer() {
 
         Properties pp = new Properties();
-        pp.setProperty(Profile.MAIN_HOST, "192.168.0.14");
+//        pp.setProperty(Profile.MAIN_HOST, "192.168.0.14");
+        pp.setProperty(Profile.MAIN_HOST, "18.191.138.129");
         pp.setProperty(Profile.MAIN_PORT, "1099");
         pp.setProperty(Profile.JVM, Profile.ANDROID);
 
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     AndroidHelper.getLocalIPAddress());
         }
         // Emulator: this is not really needed on a real device
-        pp.setProperty(Profile.LOCAL_PORT, "2000");
+        //pp.setProperty(Profile.LOCAL_PORT, "2000");
 
         microRuntimeServiceBinder.startAgentContainer(pp, new RuntimeCallback<Void>() {
 
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         microRuntimeServiceBinder.startAgent(
                 nickname,
                 DriverManagerAgent.class.getName(),
-                new Object[]{new Localization(10, 10)},
+                new Object[]{getApplicationContext(), new Localization(10, 10)}, //todo pobierz lokalizacje
                 new RuntimeCallback<Void>() {
                     @Override
                     public void onSuccess(Void thisIsNull) {

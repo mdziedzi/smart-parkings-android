@@ -1,7 +1,10 @@
 package com.marcindziedzic.smartparkingsandroid;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -66,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ParkingOffer choosenParking;
     private ArrayList<Marker> parkingMarkers = new ArrayList<>();
 
+    private MyReceiver myReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,12 +125,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-//        myReceiver = new MyReceiver();
-//
-//        IntentFilter refreshChatFilter = new IntentFilter();
-//        refreshChatFilter.addAction("jade.demo.chat.REFRESH_CHAT");
-//        registerReceiver(myReceiver, refreshChatFilter);
+        myReceiver = new MyReceiver();
+        IntentFilter parkingDataReadyFilter = new IntentFilter();
+        parkingDataReadyFilter.addAction("PARKING_DATA_READY");
+        registerReceiver(myReceiver, parkingDataReadyFilter);
+    }
 
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(TAG, "onReceive: Received intent" + action);
+            if (action.equalsIgnoreCase("PARKING_DATA_READY")) {
+                showAviableParkings(driverManagerInterface.getParkings());
+            }
+        }
     }
 
     private void showProposal(ParkingOffer choosenParking) {
@@ -149,9 +164,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-            showAviableParkings(driverManagerInterface.getParkings());
-
         }
     }
 
