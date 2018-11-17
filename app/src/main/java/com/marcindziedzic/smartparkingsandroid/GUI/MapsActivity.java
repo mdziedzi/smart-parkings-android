@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid;
+package com.marcindziedzic.smartparkingsandroid.GUI;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 

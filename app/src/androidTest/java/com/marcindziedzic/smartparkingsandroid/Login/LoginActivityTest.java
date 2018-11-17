@@ -1,7 +1,7 @@
 package com.marcindziedzic.smartparkingsandroid.Login;
 
 
-import com.marcindziedzic.smartparkingsandroid.MainActivity;
+import com.marcindziedzic.smartparkingsandroid.GUI.LoginActivity;
 import com.marcindziedzic.smartparkingsandroid.R;
 
 import org.junit.Rule;
@@ -26,8 +26,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class LoginActivityTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<LoginActivity> mActivityRule =
+            new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void typeSomething() {

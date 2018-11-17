@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid;
+package com.marcindziedzic.smartparkingsandroid.GUI;
 
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
 import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
 
@@ -34,11 +35,16 @@ import jade.util.leap.Properties;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * This activity enables user to log in or sign up to the application.
+ * @author Marcin Dziedzic
+ */
+public class LoginActivity extends AppCompatActivity {
 
     private Logger logger = Logger.getJADELogger(this.getClass().getName());
 
     private static final String TAG = "MapsActivity";
+
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
     private MicroRuntimeServiceBinder microRuntimeServiceBinder;
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         if (isServiceOK()) {
 
@@ -73,13 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isServiceOK() {
         Log.d(TAG, "isServiceOK: checking google services version");
-        int aviable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+        int aviable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(LoginActivity.this);
         if (aviable == ConnectionResult.SUCCESS) {
             Log.d(TAG, "isServiceOK: Google Play Services is working");
             return true;
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(aviable)) {
             Log.d(TAG, "isServiceOK: error occured but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, aviable, ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(LoginActivity.this, aviable, ERROR_DIALOG_REQUEST);
             dialog.show();
         } else {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
