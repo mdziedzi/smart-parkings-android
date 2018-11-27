@@ -1,18 +1,16 @@
 package com.marcindziedzic.smartparkingsandroid.Login;
 
 
-import com.marcindziedzic.smartparkingsandroid.GUI.LoginActivity;
-import com.marcindziedzic.smartparkingsandroid.R;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.marcindziedzic.smartparkingsandroid.R;
+import com.marcindziedzic.smartparkingsandroid.login.LoginActivity;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;

@@ -1,10 +1,10 @@
 package com.marcindziedzic.smartparkingsandroid.agent;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
+import com.marcindziedzic.smartparkingsandroid.login.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
 
@@ -48,8 +48,8 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     private Ontology ontology = SmartParkingsOntology.getInstance();
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
+    private LoginContract.UserActionsListener loginPresenter;
 
-    private Context context;
 
     @Override
     protected void setup() {
@@ -61,8 +61,8 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         Object[] args = getArguments();
         if (args != null) {
             if(args.length > 0) {
-                if (args[0] instanceof Context) {
-                    context = (Context) args[0];
+                if (args[0] instanceof LoginContract.UserActionsListener) {
+                    loginPresenter = (LoginContract.UserActionsListener) args[0];
                 }
                 if (args.length > 1) {
                     this.localization = (Localization) args[1];
@@ -210,7 +210,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         Intent broadcast = new Intent();
         broadcast.setAction("PARKING_DATA_READY");
         Log.d(TAG, "setup: Sending broadcast" + broadcast.getAction());
-        context.sendBroadcast(broadcast);
+        loginPresenter.onParkingChoosen();
     }
 
     // todo: replace this dummy decision algorithm
