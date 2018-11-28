@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.marcindziedzic.smartparkingsandroid.agent.util.GPSStatus;
+import com.marcindziedzic.smartparkingsandroid.util.GPSStatus;
 
 import static android.content.ContentValues.TAG;
 

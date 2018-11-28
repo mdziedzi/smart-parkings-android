@@ -7,7 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
-import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
+import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import java.util.logging.Level;
 

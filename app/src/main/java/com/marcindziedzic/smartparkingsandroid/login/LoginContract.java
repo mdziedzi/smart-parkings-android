@@ -20,6 +20,9 @@ public interface LoginContract {
          */
         void showGPSError();
 
+        /**
+         * Starts MapsActivity.
+         */
         void startMapsActivity();
     }
 
@@ -28,19 +31,23 @@ public interface LoginContract {
      */
     interface UserActionsListener {
 
-        void logIn();
-
-        void signUp();
-
         /**
          * Resolves if user has configured Google Play Services
-         *
          * @param locationServices Interface to comunicate Localization Android API with presenter
          */
-        void resolveGPSRequirements(LocationServices locationServices);
+        void resolveGooglePlayRequirements(LocationServices locationServices);
 
+        /**
+         * Creates container and agent in AMS.
+         *
+         * @param serviceBinder Util for creating container and agent.
+         * @param agentName     Name of the new agent.
+         */
         void connectToService(ServiceBinder serviceBinder, String agentName);
 
-        void onParkingChoosen();
+        /**
+         * Method called after agent chooses parking.
+         */
+        void onParkingChosen();
     }
 }

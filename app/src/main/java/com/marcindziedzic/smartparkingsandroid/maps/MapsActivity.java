@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.GUI;
+package com.marcindziedzic.smartparkingsandroid.maps;
 
 import android.Manifest;
 import android.content.Intent;

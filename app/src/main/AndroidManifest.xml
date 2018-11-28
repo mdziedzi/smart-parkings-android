@@ -42,7 +42,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".GUI.MapsActivity"
+            android:name=".maps.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait">
             <meta-data

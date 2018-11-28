@@ -1,7 +1,6 @@
 package com.marcindziedzic.smartparkingsandroid.login;
 
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -11,11 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.marcindziedzic.smartparkingsandroid.GUI.MapsActivity;
 import com.marcindziedzic.smartparkingsandroid.R;
-
-import jade.android.MicroRuntimeServiceBinder;
-import jade.util.Logger;
+import com.marcindziedzic.smartparkingsandroid.maps.MapsActivity;
 
 /**
  * This activity enables user to log in or sign up to the application.
@@ -23,22 +19,15 @@ import jade.util.Logger;
  */
 public class LoginActivity extends AppCompatActivity implements LoginContract.View {
 
-    private Logger logger = Logger.getJADELogger(this.getClass().getName());
-    private static final String TAG = "MapsActivity";
-
     private EditText agentNameTV;
     private Button loginButton;
 
-    private LoginContract.UserActionsListener mActionsListener;
+    private LoginContract.UserActionsListener loginPresenter;
 
-
-
-    private static final int ERROR_DIALOG_REQUEST = 9001;
-
-    private MicroRuntimeServiceBinder microRuntimeServiceBinder;
-    private ServiceConnection serviceConnection;
     private LocationServices locationServices;
+
     private ServiceBinder serviceBinder;
+
     private TextWatcher agentNameTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -63,10 +52,10 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mActionsListener = new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this);
         initViews();
         initLocationServices();
-        mActionsListener.resolveGPSRequirements(locationServices);
+        loginPresenter.resolveGooglePlayRequirements(locationServices);
         initServiceBinder();
 
     }
@@ -89,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionsListener.connectToService(serviceBinder, agentNameTV.getText().toString());
+                loginPresenter.connectToService(serviceBinder, agentNameTV.getText().toString());
             }
         });
     }

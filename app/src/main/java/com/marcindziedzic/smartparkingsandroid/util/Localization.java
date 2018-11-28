@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.agent.util;
+package com.marcindziedzic.smartparkingsandroid.util;
 
 public class Localization {
 

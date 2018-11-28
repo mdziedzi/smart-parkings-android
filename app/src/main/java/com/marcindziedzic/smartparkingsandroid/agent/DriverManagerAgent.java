@@ -3,10 +3,10 @@ package com.marcindziedzic.smartparkingsandroid.agent;
 import android.content.Intent;
 import android.util.Log;
 
-import com.marcindziedzic.smartparkingsandroid.agent.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.login.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
+import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,9 +28,9 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
 
-import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.DISTANCE_FACTOR;
-import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.PRICE_FACTOR;
-import static com.marcindziedzic.smartparkingsandroid.agent.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
 public class DriverManagerAgent extends Agent implements DriverManagerInterface {
 
@@ -210,7 +210,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         Intent broadcast = new Intent();
         broadcast.setAction("PARKING_DATA_READY");
         Log.d(TAG, "setup: Sending broadcast" + broadcast.getAction());
-        loginPresenter.onParkingChoosen();
+        loginPresenter.onParkingChosen();
     }
 
     // todo: replace this dummy decision algorithm

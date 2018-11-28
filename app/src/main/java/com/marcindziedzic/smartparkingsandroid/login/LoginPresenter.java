@@ -11,17 +11,7 @@ public class LoginPresenter implements LoginContract.UserActionsListener {
     }
 
     @Override
-    public void logIn() {
-
-    }
-
-    @Override
-    public void signUp() {
-
-    }
-
-    @Override
-    public void resolveGPSRequirements(LocationServices locationServices) {
+    public void resolveGooglePlayRequirements(LocationServices locationServices) {
 
         switch (locationServices.checkAllPrivileges()) {
             case OK:
@@ -41,7 +31,7 @@ public class LoginPresenter implements LoginContract.UserActionsListener {
     }
 
     @Override
-    public void onParkingChoosen() {
+    public void onParkingChosen() {
         mLoginView.startMapsActivity();
     }
 
