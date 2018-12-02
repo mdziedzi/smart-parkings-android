@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
 
     private void openMapsActivity() {
         Intent intent = new Intent(this, MapsActivity.class);
-        intent.putExtra("nickname", agentNameTV.getText().toString());
+        intent.putExtra("agentName", agentNameTV.getText().toString());
         startActivity(intent);
     }
 

@@ -49,6 +49,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.marcindziedzic.smartparkingsandroid.login.LoginActivity" />
         </activity>
+        <activity android:name=".util.LocationPermissionsUtil" />
     </application>
 
 </manifest>

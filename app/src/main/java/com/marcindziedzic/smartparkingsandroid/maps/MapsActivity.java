@@ -3,22 +3,16 @@ package com.marcindziedzic.smartparkingsandroid.maps;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -26,11 +20,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
+import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
+import com.marcindziedzic.smartparkingsandroid.util.LocationPermissionsUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,7 +33,7 @@ import jade.core.MicroRuntime;
 import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, MapsContract.View {
 
 
     private static final String TAG = "MapsActivity";
@@ -52,20 +46,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    private FusedLocationProviderClient mFusedLocationClient;
-
     ImageButton recentreButton;
-    ImageButton settingsButton;
     Button parkNowButton;
     Button navigateToButton;
     Button driveButton;
 
-    private Location mLocation;
 
-    String nickname;
+    String agentName;
     DriverManagerInterface driverManagerInterface;
     private ParkingOffer choosenParking;
     private ArrayList<Marker> parkingMarkers = new ArrayList<>();
+    private MapsContract.Presenter mapsPresenter;
+    private LocationPermissions locationPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +67,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        initViews();
+
+        initPresenter();
+        initLocationPermissions();
+        mapsPresenter.resolveLocationPermissions(locationPermissions);
+
+
+        agentName = getIntent().getStringExtra("agentName");
+        bindAgent(agentName);
+
+    }
+
+    private void initLocationPermissions() {
+        locationPermissions = new LocationPermissionsUtil(getApplicationContext());
+    }
+
+    private void initPresenter() {
+        mapsPresenter = new MapsPresenter(this);
+    }
+
+    private void initViews() {
         recentreButton = findViewById(R.id.recentreButton);
         recentreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mLocation != null) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), DEFAULT_ZOOM));
-                }
+                locationPermissions.recenter();
             }
         });
-
-        getLocationPermission();
-
-        nickname = getIntent().getStringExtra("nickname");
-
-        try {
-            driverManagerInterface = MicroRuntime.getAgent(nickname)
-                    .getO2AInterface(DriverManagerInterface.class);
-        } catch (StaleProxyException e) {
-            Log.e(TAG, "onCreate: internal error");
-        } catch (ControllerException e) {
-            Log.e(TAG, "onCreate:  server error");
-        }
 
         driveButton = findViewById(R.id.driveButton);
         driveButton.setOnClickListener(new View.OnClickListener() {
@@ -117,18 +115,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 choosenParking = driverManagerInterface.getBestParking();
-                showProposal(choosenParking);
+                showProposedParking(choosenParking);
             }
         });
-
     }
 
-    private void showProposal(ParkingOffer choosenParking) {
-        final LatLng latLng = new LatLng(choosenParking.getLat(), choosenParking.getLon());
-        removeMarker(latLng);
-        addMarkerOfChosenParking(latLng);
-        prepareButtonsForProposal();
+    private void bindAgent(String agentName) {
+        try {
+            driverManagerInterface = MicroRuntime.getAgent(agentName)
+                    .getO2AInterface(DriverManagerInterface.class);
+        } catch (StaleProxyException e) {
+            Log.e(TAG, "onCreate: internal error");
+        } catch (ControllerException e) {
+            Log.e(TAG, "onCreate:  server error");
+        }
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -137,20 +139,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
 
-        if (mLocationPermissionsGranted) {
-            getDeviceLocation();
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
+        locationPermissions.setMap(mMap);
+        mapsPresenter.setLocationEnabled(locationPermissions);
 
-        showAviableParkings(driverManagerInterface.getParkings());
-
+        showAvailableParkings(driverManagerInterface.getParkings());
     }
 
-    private void showAviableParkings(ArrayList<ParkingOffer> parkings) {
+    private void showAvailableParkings(ArrayList<ParkingOffer> parkings) {
         for (ParkingOffer p : parkings) {
             parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice()))));
         }
@@ -180,69 +175,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getLocationPermission(){
-        Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                mLocationPermissionsGranted = true;
-            }else{
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    private void getDeviceLocation() {
-        Log.d(TAG, "getDeviceLocation: getting the devices current location");
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        try {
-            if (mLocationPermissionsGranted) {
-                final Task<Location> location = mFusedLocationClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: found location!");
-                            Location currentLocation = (Location) task.getResult();
-                            if (currentLocation != null) {
-                                mLocation = currentLocation;
-                                Log.d(TAG, "onComplete: mLocation: " + mLocation.getLatitude() + "; " + mLocation.getLongitude());
-                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
-                            } else {
-                                Toast.makeText(MapsActivity.this, "Error during fetching location", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Log.d(TAG, "onComplete: unable to get current loction");
-                            Toast.makeText(MapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "getDeviceLocation: SECURITY EXCEPTION " + e.getMessage());
-        }
-    }
-
-    private void moveCamera(LatLng latLng, float zoom) {
-        Log.d(TAG, "moveCamera: moving camera to lat: " + latLng.latitude + ", lng " + latLng.longitude);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-    }
-
-    private void initMap(){
+    private void initMap() {
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapsActivity.this);
+    }
+
+    private void showProposedParking(ParkingOffer chosenParking) {
+        final LatLng latLng = new LatLng(chosenParking.getLat(), chosenParking.getLon());
+        removeMarker(latLng);
+        addMarkerOfChosenParking(latLng);
+        prepareButtonsForProposal();
     }
 
     private void prepareButtonsForProposal() {
@@ -272,4 +215,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
 }
