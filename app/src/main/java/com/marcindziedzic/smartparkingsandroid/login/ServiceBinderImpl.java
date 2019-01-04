@@ -22,6 +22,9 @@ import jade.util.leap.Properties;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.IP;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.PORT;
+
 public class ServiceBinderImpl implements ServiceBinder {
     private final Context context;
     private ServiceConnection serviceConnection;
@@ -74,9 +77,8 @@ public class ServiceBinderImpl implements ServiceBinder {
     private void startContainer(final String agentName, final LoginPresenter loginPresenter) {
 
         Properties pp = new Properties();
-        pp.setProperty(Profile.MAIN_HOST, "192.168.0.10");
-//        pp.setProperty(Profile.MAIN_HOST, "18.191.138.129");
-        pp.setProperty(Profile.MAIN_PORT, "1099");
+        pp.setProperty(Profile.MAIN_HOST, IP);
+        pp.setProperty(Profile.MAIN_PORT, PORT);
         pp.setProperty(Profile.JVM, Profile.ANDROID);
 
         if (AndroidHelper.isEmulator()) {
@@ -113,7 +115,7 @@ public class ServiceBinderImpl implements ServiceBinder {
                 nickname,
                 DriverManagerAgent.class.getName(),
 //                new Object[]{getApplicationContext(), new Localization(10, 10)}, //todo pobierz lokalizacje
-                new Object[]{loginPresenter, new Localization(10, 10)}, //todo pobierz lokalizacje
+                new Object[]{loginPresenter, new Localization(52.219157, 21.0112079)}, //todo pobierz lokalizacje
                 new RuntimeCallback<Void>() {
                     @Override
                     public void onSuccess(Void thisIsNull) {
