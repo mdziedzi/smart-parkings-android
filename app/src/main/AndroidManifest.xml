@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <service android:name="jade.android.MicroRuntimeService" />
 
-        <activity android:name=".login.LoginActivity">
+        <activity android:name=".loginFeature.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,12 +42,12 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".maps.MapsActivity"
+            android:name=".mapsFeature.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.marcindziedzic.smartparkingsandroid.login.LoginActivity" />
+                android:value="com.marcindziedzic.smartparkingsandroid.loginFeature.LoginActivity" />
         </activity>
         <activity android:name=".util.LocationPermissionsUtil" />
     </application>

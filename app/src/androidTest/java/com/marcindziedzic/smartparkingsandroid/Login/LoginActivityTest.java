@@ -6,7 +6,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.marcindziedzic.smartparkingsandroid.R;
-import com.marcindziedzic.smartparkingsandroid.login.LoginActivity;
+import com.marcindziedzic.smartparkingsandroid.loginFeature.LoginActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

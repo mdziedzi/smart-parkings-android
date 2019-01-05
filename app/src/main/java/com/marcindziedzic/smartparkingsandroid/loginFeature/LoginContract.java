@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.login;
+package com.marcindziedzic.smartparkingsandroid.loginFeature;
 
 /**
  * Login feature contract interface to establish interfaces between view and presenter in MVC pattern.

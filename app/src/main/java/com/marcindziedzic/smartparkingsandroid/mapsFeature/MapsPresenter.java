@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.maps;
+package com.marcindziedzic.smartparkingsandroid.mapsFeature;
 
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 

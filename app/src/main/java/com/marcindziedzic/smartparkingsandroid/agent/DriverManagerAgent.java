@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
-import com.marcindziedzic.smartparkingsandroid.login.LoginContract;
+import com.marcindziedzic.smartparkingsandroid.loginFeature.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
 import com.marcindziedzic.smartparkingsandroid.util.Localization;

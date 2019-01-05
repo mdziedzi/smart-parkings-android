@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.login;
+package com.marcindziedzic.smartparkingsandroid.loginFeature;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.marcindziedzic.smartparkingsandroid.R;
-import com.marcindziedzic.smartparkingsandroid.maps.MapsActivity;
+import com.marcindziedzic.smartparkingsandroid.mapsFeature.MapsActivity;
 
 /**
  * This activity enables user to log in or sign up to the application.

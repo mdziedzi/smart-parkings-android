@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.login;
+package com.marcindziedzic.smartparkingsandroid.loginFeature;
 
 import android.app.Activity;
 import android.app.Dialog;

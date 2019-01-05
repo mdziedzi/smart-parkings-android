@@ -1,4 +1,4 @@
-package com.marcindziedzic.smartparkingsandroid.login;
+package com.marcindziedzic.smartparkingsandroid.loginFeature;
 
 import com.marcindziedzic.smartparkingsandroid.util.GPSStatus;
 
