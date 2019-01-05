@@ -40,8 +40,9 @@ public final class Constants {
     public static double PRICE_FACTOR = 0.1;
     public static double DISTANCE_FACTOR = 0.01;
 
-    //    public static String IP = "192.168.0.10";
-    public static String IP = "3.17.29.22";
+    public static final String SD_TYPE_PARKING = "parking";
+    public static String IP = "192.168.0.10";
+    //    public static String IP = "3.17.29.22";
     public static String PORT = "1099";
 
 }

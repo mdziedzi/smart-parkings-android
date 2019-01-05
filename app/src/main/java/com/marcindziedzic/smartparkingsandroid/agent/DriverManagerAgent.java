@@ -3,6 +3,7 @@ package com.marcindziedzic.smartparkingsandroid.agent;
 import android.content.Intent;
 import android.util.Log;
 
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
 import com.marcindziedzic.smartparkingsandroid.login.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
@@ -15,6 +16,7 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.ParallelBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -23,6 +25,7 @@ import jade.lang.acl.ACLMessage;
 
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
 
 public class DriverManagerAgent extends Agent implements DriverManagerInterface {
 
@@ -30,7 +33,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
 
     private Localization localization;
 
-    private AID[] aviableParkings;
+    private ArrayList<AID> aviableParkings;
 
     private ACLMessage currentMessage;
 
@@ -79,22 +82,25 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
             fe.printStackTrace();
         }
 
-        // Update list of parkings
-        DFAgentDescription searchTemplate = new DFAgentDescription();
-        ServiceDescription templateServiceDescription = new ServiceDescription();
-        templateServiceDescription.setType("parking-info");
-        searchTemplate.addServices(templateServiceDescription);
+//        // Update list of parkings
+//        DFAgentDescription searchTemplate = new DFAgentDescription();
+//        ServiceDescription templateServiceDescription = new ServiceDescription();
+//        templateServiceDescription.setType("parking-info");
+//        searchTemplate.addServices(templateServiceDescription);
 
-        DFAgentDescription[] result = new DFAgentDescription[0];
-        try {
-            result = DFService.search(this, searchTemplate);
-        } catch (FIPAException e) {
-            e.printStackTrace();
-        }
-        aviableParkings = new AID[result.length];
-        for (int i = 0; i < result.length; ++i) {
-            aviableParkings[i] = result[i].getName();
-        }
+//        DFAgentDescription[] result = new DFAgentDescription[0];
+//        try {
+//            result = DFService.search(this, searchTemplate);
+//        } catch (FIPAException e) {
+//            e.printStackTrace();
+//        }
+//        aviableParkings = new AID[result.length];
+//        for (int i = 0; i < result.length; ++i) {
+//            aviableParkings[i] = result[i].getName();
+//        }
+        aviableParkings = getActualParkingAids();
+
+        addBehaviour(new ParkingDataCollectorRole(this, ParallelBehaviour.WHEN_ALL));
 
 
 //        System.out.println("Driver-agent: " + getAID().getName() + "have found this parkings:");
@@ -252,6 +258,32 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     @Override
     public ParkingOffer getBestParking() {
         return bestParking;
+    }
+
+    public ArrayList<AID> getActualParkingAids() {
+
+        // Update list of parkings
+        DFAgentDescription searchTemplate = new DFAgentDescription();
+        ServiceDescription templateServiceDescription = new ServiceDescription();
+        templateServiceDescription.setType(SD_TYPE_PARKING);
+        searchTemplate.addServices(templateServiceDescription);
+
+        DFAgentDescription[] result = new DFAgentDescription[0];
+        try {
+            result = DFService.search(this, searchTemplate);
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<AID> parkingAidArray = new ArrayList<>();
+        for (DFAgentDescription aResult : result) {
+            parkingAidArray.add(aResult.getName());
+        }
+        return parkingAidArray;
+    }
+
+    public void updateParkingList(ArrayList<ParkingOffer> parkingData) {
+        //todo
     }
 }
 
