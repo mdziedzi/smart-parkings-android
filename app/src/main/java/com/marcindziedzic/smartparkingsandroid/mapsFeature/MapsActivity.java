@@ -80,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void initLocationPermissions() {
-        locationPermissions = new LocationPermissionsUtil(getApplicationContext());
+        locationPermissions = new LocationPermissionsUtil(this);
     }
 
     private void initPresenter() {

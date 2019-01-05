@@ -45,6 +45,9 @@ public final class Constants {
     //    public static String IP = "3.17.29.22";
     public static String PORT = "1099";
 
+    public static final String SD_TYPE_DRIVER = "driver";
+    public static final String SD_NAME_DRIVER = "JADE-driver";
+
 }
 
 

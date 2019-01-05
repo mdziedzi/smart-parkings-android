@@ -31,7 +31,12 @@ public class LoginPresenter implements LoginContract.UserActionsListener {
     }
 
     @Override
-    public void onParkingChosen() {
+    public void onParkingChosen() { //todo delete
+        mLoginView.startMapsActivity();
+    }
+
+    @Override
+    public void onAgentStarted() {
         mLoginView.startMapsActivity();
     }
 

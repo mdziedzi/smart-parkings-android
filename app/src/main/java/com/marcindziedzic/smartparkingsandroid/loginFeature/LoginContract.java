@@ -49,5 +49,7 @@ public interface LoginContract {
          * Method called after agent chooses parking.
          */
         void onParkingChosen();
+
+        void onAgentStarted();
     }
 }

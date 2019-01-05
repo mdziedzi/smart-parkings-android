@@ -25,6 +25,8 @@ import jade.lang.acl.ACLMessage;
 
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_NAME_DRIVER;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
 
 public class DriverManagerAgent extends Agent implements DriverManagerInterface {
@@ -69,36 +71,12 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
 
         registerO2AInterface(DriverManagerInterface.class, this);
 
-        // Register the parking service in the yellow pages
-        DFAgentDescription myTemplate = new DFAgentDescription();
-        myTemplate.setName(getAID());
-        ServiceDescription myServiceDescription = new ServiceDescription();
-        myServiceDescription.setType("driver-info");
-        myServiceDescription.setName("JADE-driver-info");
-        myTemplate.addServices(myServiceDescription);
-        try {
-            DFService.register(this, myTemplate);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
+        registerDriverAgentInDf();
 
-//        // Update list of parkings
-//        DFAgentDescription searchTemplate = new DFAgentDescription();
-//        ServiceDescription templateServiceDescription = new ServiceDescription();
-//        templateServiceDescription.setType("parking-info");
-//        searchTemplate.addServices(templateServiceDescription);
-
-//        DFAgentDescription[] result = new DFAgentDescription[0];
-//        try {
-//            result = DFService.search(this, searchTemplate);
-//        } catch (FIPAException e) {
-//            e.printStackTrace();
-//        }
-//        aviableParkings = new AID[result.length];
-//        for (int i = 0; i < result.length; ++i) {
-//            aviableParkings[i] = result[i].getName();
-//        }
+        // Update list of parkings
         aviableParkings = getActualParkingAids();
+
+        initAndroidAppEnvironment();
 
         addBehaviour(new ParkingDataCollectorRole(this, ParallelBehaviour.WHEN_ALL));
 
@@ -203,6 +181,25 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
 //                System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
 //            }
 //        });
+    }
+
+    private void initAndroidAppEnvironment() {
+        loginPresenter.onAgentStarted();
+    }
+
+    private void registerDriverAgentInDf() {
+        // Register the parking service in the yellow pages
+        DFAgentDescription myTemplate = new DFAgentDescription();
+        myTemplate.setName(getAID());
+        ServiceDescription myServiceDescription = new ServiceDescription();
+        myServiceDescription.setType(SD_TYPE_DRIVER);
+        myServiceDescription.setName(SD_NAME_DRIVER);
+        myTemplate.addServices(myServiceDescription);
+        try {
+            DFService.register(this, myTemplate);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
     }
 
     private void sendParkingDataReadyBroadcast() {
