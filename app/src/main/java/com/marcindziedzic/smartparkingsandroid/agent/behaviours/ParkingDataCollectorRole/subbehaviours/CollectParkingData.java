@@ -1,8 +1,11 @@
 package com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.subbehaviours;
 
+import android.util.Log;
+
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
+import com.marcindziedzic.smartparkingsandroid.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +22,7 @@ import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
 public class CollectParkingData extends OneShotBehaviour {
+    private static final String TAG = OneShotBehaviour.class.getSimpleName();
     private final ParkingDataCollectorRole parentBehaviour;
     private int nResponders = 0;
     private ArrayList<ParkingOffer> parkingData = new ArrayList<>();
@@ -27,53 +31,9 @@ public class CollectParkingData extends OneShotBehaviour {
         parentBehaviour = parkingDataCollectorRole;
     }
 
+    //https://github.com/mihaimaruseac/JADE-ARIA/blob/master/src/examples/protocols/FIPARequestInitiatorAgent.java
     @Override
     public void action() {
-//        // TODO w prakinga nie ma inform
-//        MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.INFORM),
-//                new MessageTemplate(new MessageTemplate.MatchExpression() {
-//                    @Override
-//                    public boolean match(ACLMessage matchMsg) {
-//                        ContentElement content = null;
-//                        try {
-//                            content = CollectParkingData.this.getAgent().getContentManager().extractContent(matchMsg);
-//                        } catch (Codec.CodecException | OntologyException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                        return content instanceof ParkingOffer;
-//                    }
-//                }));
-//        ACLMessage msg = myAgent.receive(mt);
-//        if (msg != null) {
-//            System.out.println(msg);
-//
-////            parentBehaviour.getDriverManagerAgent().updateParkingList(msg.get);
-//
-//                                    ContentElement content = null;
-//                        try {
-//                            content = getAgent().getContentManager()
-//                                    .extractContent(msg);
-//                        } catch (Codec.CodecException | OntologyException e1) {
-//                            e1.printStackTrace();
-//                        }
-//
-//                        if (content instanceof ParkingOffer) {
-//                            ParkingOffer currProposal = (ParkingOffer) content;
-//                            parentBehaviour.getDriverManagerAgent().updateParkingList(currProposal);
-//
-//
-//
-//                        } else {
-//                            System.out.println("err");
-//                        }
-//
-//        } else {
-//            block();
-//        }
-
-
-//https://github.com/mihaimaruseac/JADE-ARIA/blob/master/src/examples/protocols/FIPARequestInitiatorAgent.java
-
         // Fill the REQUEST message
         final ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
         for (AID receiver : parentBehaviour.getDriverManagerAgent().getActualParkingAids()) {
@@ -81,8 +41,9 @@ public class CollectParkingData extends OneShotBehaviour {
         }
         msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
         // We want to receive a reply in 1 secs
-        msg.setReplyByDate(new Date(System.currentTimeMillis() + 1000)); //todo add to constraints
-//        msg.setContent("dummy-action");
+        msg.setReplyByDate(new Date(System.currentTimeMillis() + Constants
+                .REQUEST_INITIATOR_TIMEOUT));
+
         prepareMsg(msg);
 
         parentBehaviour.addSubBehaviour(new AchieveREInitiator(getAgent(), msg) {
@@ -91,12 +52,13 @@ public class CollectParkingData extends OneShotBehaviour {
                 ContentElement content = null;
                 try {
                     content = CollectParkingData.this.getAgent().getContentManager()
-                            .extractContent(msg);
+                            .extractContent(inform);
                 } catch (Codec.CodecException | OntologyException e1) {
                     e1.printStackTrace();
                 }
                 if (content instanceof ParkingOffer) {
                     parkingData.add((ParkingOffer) content);
+                    Log.d(TAG, "handleInform: " + ((ParkingOffer) content).getLat() + ((ParkingOffer) content).getLon());
                     System.out.println(parkingData.iterator().next().toString());//todo delete
                 } else {
                     System.out.println("It's not instance of ParkingOffer");

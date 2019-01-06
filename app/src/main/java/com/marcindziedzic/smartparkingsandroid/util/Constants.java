@@ -48,6 +48,8 @@ public final class Constants {
     public static final String SD_TYPE_DRIVER = "driver";
     public static final String SD_NAME_DRIVER = "JADE-driver";
 
+    public static final int REQUEST_INITIATOR_TIMEOUT = 5000;
+
 }
 
 

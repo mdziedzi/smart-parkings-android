@@ -6,7 +6,11 @@ import java.util.ArrayList;
 
 public interface DriverManagerInterface {
 
-    ArrayList<ParkingOffer> getParkings();
+    void getParkings(GetParkingsInfoCallback callback);
+
+    interface GetParkingsInfoCallback {
+        void onParkingDataCollected(ArrayList<ParkingOffer> parkingData);
+    }
 
     ParkingOffer getBestParking();
 }

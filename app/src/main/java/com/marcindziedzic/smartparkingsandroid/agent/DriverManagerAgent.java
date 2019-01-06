@@ -46,6 +46,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
     private LoginContract.UserActionsListener loginPresenter;
+    private GetParkingsInfoCallback getParkingsInfoCallback;
 
 
     @Override
@@ -253,6 +254,13 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     }
 
     @Override
+    public void getParkings(GetParkingsInfoCallback callback) {
+        getParkingsInfoCallback = callback;
+        addBehaviour(new ParkingDataCollectorRole(this, ParallelBehaviour.WHEN_ALL));
+//        callback.onParkingDataCollected(parkings);
+    }
+
+    @Override
     public ParkingOffer getBestParking() {
         return bestParking;
     }
@@ -279,8 +287,18 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         return parkingAidArray;
     }
 
+    /**
+     * Enables to perform updating parking list.
+     *
+     * @param parkingData Data about available parkings.
+     */
     public void updateParkingList(ArrayList<ParkingOffer> parkingData) {
-        //todo
+        Log.d(TAG, "updateParkingList: ");
+        parkings = parkingData;
+        if (getParkingsInfoCallback != null) {
+            getParkingsInfoCallback.onParkingDataCollected(parkings);
+        }
+
     }
 }
 

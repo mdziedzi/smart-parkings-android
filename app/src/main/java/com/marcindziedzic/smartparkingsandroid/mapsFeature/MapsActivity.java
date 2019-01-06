@@ -58,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> parkingMarkers = new ArrayList<>();
     private MapsContract.Presenter mapsPresenter;
     private LocationPermissions locationPermissions;
+    private ImageButton refreshParkingDataButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showProposedParking(choosenParking);
             }
         });
+
+        refreshParkingDataButton = findViewById(R.id.refreshParkingDataButton);
+        refreshParkingDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                driverManagerInterface.getParkings(new DriverManagerInterface.GetParkingsInfoCallback() {
+                    @Override
+                    public void onParkingDataCollected(final ArrayList<ParkingOffer> parkingData) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showAvailableParkings(parkingData);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     private void bindAgent(String agentName) {
@@ -142,11 +161,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationPermissions.setMap(mMap);
         mapsPresenter.setLocationEnabled(locationPermissions);
 
-        showAvailableParkings(driverManagerInterface.getParkings());
+        driverManagerInterface.getParkings(new DriverManagerInterface.GetParkingsInfoCallback() {
+            @Override
+            public void onParkingDataCollected(final ArrayList<ParkingOffer> parkingData) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAvailableParkings(parkingData);
+                    }
+                });
+            }
+        });
     }
 
     private void showAvailableParkings(ArrayList<ParkingOffer> parkings) {
+        Log.d(TAG, "showAvailableParkings: ");
         for (ParkingOffer p : parkings) {
+            Log.d(TAG, "showAvailableParkings: Current parking data: " + p.getLat() + p.getLon());
             parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice()))));
         }
     }
