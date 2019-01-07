@@ -29,7 +29,7 @@ public class Reservationist extends OneShotBehaviour {
 
     private final ReservationistRole parentRole;
     private int nResponders;
-    private ArrayList<ParkingOffer> parkings;
+    private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
 
     public Reservationist(ReservationistRole reservationistRole) {
@@ -129,9 +129,10 @@ public class Reservationist extends OneShotBehaviour {
                     System.out.println("Accepting proposal " + bestProposal + " from responder " + bestProposer.getName());
                     bestParking = bestProposal;
                     accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                    if (bestParking != null) {
+                        sendParkingHasBeenChosen(bestParking);
+                    }
                 }
-//                sendParkingDataReadyBroadcast();
-                sendParkingHasBeenChosen(bestParking);
             }
 
             protected void handleInform(ACLMessage inform) {

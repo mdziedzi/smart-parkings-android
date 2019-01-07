@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
+import com.marcindziedzic.smartparkingsandroid.settingsFeature.SettingsActivity;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissionsUtil;
 
@@ -59,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private MapsContract.Presenter mapsPresenter;
     private LocationPermissions locationPermissions;
     private ImageButton refreshParkingDataButton;
+    private ImageButton settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,10 +120,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d(TAG, "onClick: parkNowButton");
                 driverManagerInterface.getBestParking(new DriverManagerInterface.GetBestParkingCallback() {
                     @Override
-                    public void onBestParkingFound(ParkingOffer parkingOffer) {
+                    public void onBestParkingFound(final ParkingOffer parkingOffer) {
                         Log.d(TAG, "onBestParkingFound: ");
-                        choosenParking = parkingOffer;
-                        showProposedParking(parkingOffer);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(TAG, "run: ");
+                                choosenParking = parkingOffer;
+                                showProposedParking(parkingOffer);
+                            }
+                        });
+
                     }
                 });
             }
@@ -144,6 +153,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         });
+
+        settingsButton = findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSettingsActivity();
+            }
+        });
+
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void bindAgent(String agentName) {

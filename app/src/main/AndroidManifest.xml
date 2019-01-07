@@ -50,6 +50,7 @@
                 android:value="com.marcindziedzic.smartparkingsandroid.loginFeature.LoginActivity" />
         </activity>
         <activity android:name=".util.LocationPermissionsUtil" />
+        <activity android:name=".settingsFeature.SettingsActivity"></activity>
     </application>
 
 </manifest>
