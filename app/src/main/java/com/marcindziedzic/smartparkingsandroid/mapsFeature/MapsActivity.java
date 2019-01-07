@@ -115,8 +115,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         parkNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choosenParking = driverManagerInterface.getBestParking();
-                showProposedParking(choosenParking);
+                Log.d(TAG, "onClick: parkNowButton");
+                driverManagerInterface.getBestParking(new DriverManagerInterface.GetBestParkingCallback() {
+                    @Override
+                    public void onBestParkingFound(ParkingOffer parkingOffer) {
+                        Log.d(TAG, "onBestParkingFound: ");
+                        choosenParking = parkingOffer;
+                        showProposedParking(parkingOffer);
+                    }
+                });
             }
         });
 
@@ -213,6 +220,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showProposedParking(ParkingOffer chosenParking) {
+        Log.d(TAG, "showProposedParking: ");
         final LatLng latLng = new LatLng(chosenParking.getLat(), chosenParking.getLon());
         removeMarker(latLng);
         addMarkerOfChosenParking(latLng);

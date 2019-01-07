@@ -1,5 +1,7 @@
 package com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.subbehaviours;
 
+import android.util.Log;
+
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 
@@ -17,9 +19,14 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
 
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
 public class Reservationist extends OneShotBehaviour {
+
+    private static final String TAG = Reservationist.class.getSimpleName();
+
     private final ReservationistRole parentRole;
     private int nResponders;
     private ArrayList<ParkingOffer> parkings;
@@ -39,10 +46,9 @@ public class Reservationist extends OneShotBehaviour {
         for (AID receiver : aviableParkings) {
             currentMessage.addReceiver(receiver);
         }
+        Log.d(TAG, "action: aviableParkings = " + aviableParkings.size());
 
-        System.out.println();
         nResponders = aviableParkings.size();
-
 
         currentMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
         // give 2s for reply
@@ -125,7 +131,7 @@ public class Reservationist extends OneShotBehaviour {
                     accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 }
 //                sendParkingDataReadyBroadcast();
-                sendParkingHasBeenChosen();
+                sendParkingHasBeenChosen(bestParking);
             }
 
             protected void handleInform(ACLMessage inform) {
@@ -134,13 +140,37 @@ public class Reservationist extends OneShotBehaviour {
         });
     }
 
-    private void sendParkingHasBeenChosen() {
+    private void sendParkingHasBeenChosen(ParkingOffer bestParking) {
+        Log.d(TAG, "sendParkingHasBeenChosen: ");
+        parentRole.getDriverManagerAgent().onParkingChoosen(bestParking);
         // todo
     }
 
     private boolean isBetter(ParkingOffer currProposal, ParkingOffer bestProposal) {
-        // todo
-        return true;
+        Log.v(TAG, "isBetter: ");
+        float proposalPrice = currProposal.getPrice();
+        float proposalLat = currProposal.getLat();
+        float proposalLon = currProposal.getLon();
+
+        float chosenPrice = bestProposal.getPrice();
+        float chosenLat = bestProposal.getLat();
+        float chosenLon = bestProposal.getLon();
+
+        double proposalDist = Math.sqrt(Math.pow(parentRole.getDriverManagerAgent().getLocalization()
+                .getLatitude() - proposalLat, 2) + Math.pow(parentRole.getDriverManagerAgent()
+                .getLocalization().getLongitude() -
+                proposalLon, 2));
+        double chosenDist = Math.sqrt(Math.pow(parentRole.getDriverManagerAgent().getLocalization().getLatitude()
+                - chosenLat, 2) + Math
+                .pow
+                        (parentRole.getDriverManagerAgent().getLocalization().getLongitude() - chosenLon, 2));
+
+        // todo: find the right
+        double currProposalScore = PRICE_FACTOR * proposalPrice + DISTANCE_FACTOR * proposalDist;
+        double bestProposalScore = PRICE_FACTOR * chosenPrice + DISTANCE_FACTOR * chosenDist;
+
+        // the less is better
+        return currProposalScore <= bestProposalScore;
     }
 
 

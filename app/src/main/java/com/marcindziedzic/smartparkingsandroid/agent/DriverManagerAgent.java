@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
 import com.marcindziedzic.smartparkingsandroid.loginFeature.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
@@ -47,6 +48,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     private ParkingOffer bestParking;
     private LoginContract.UserActionsListener loginPresenter;
     private GetParkingsInfoCallback getParkingsInfoCallback;
+    private GetBestParkingCallback getBestParkingCallback;
 
 
     @Override
@@ -162,8 +164,10 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     }
 
     @Override
-    public ParkingOffer getBestParking() {
-        return bestParking;
+    public void getBestParking(GetBestParkingCallback callback) {
+        Log.d(TAG, "getBestParking: ");
+        getBestParkingCallback = callback;
+        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL));
     }
 
     public ArrayList<AID> getActualParkingAids() {
@@ -200,6 +204,12 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
             getParkingsInfoCallback.onParkingDataCollected(parkings);
         }
 
+    }
+
+    public void onParkingChoosen(ParkingOffer bestParking) {
+        // todo wrzucic wszystkie metody które wywołuą role do interfejsu
+        Log.d(TAG, "onParkingChoosen: ");
+        getBestParkingCallback.onBestParkingFound(bestParking);
     }
 }
 

@@ -12,5 +12,9 @@ public interface DriverManagerInterface {
         void onParkingDataCollected(ArrayList<ParkingOffer> parkingData);
     }
 
-    ParkingOffer getBestParking();
+    void getBestParking(GetBestParkingCallback callback);
+
+    interface GetBestParkingCallback {
+        void onBestParkingFound(ParkingOffer parkingOffer);
+    }
 }
