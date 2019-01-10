@@ -51,6 +51,9 @@ public final class Constants {
 
     public static final int REQUEST_INITIATOR_TIMEOUT = 5000;
 
+    public static final String DESTINATION_TITLE = "miejsce docelowe";
+
+
 }
 
 

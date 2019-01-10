@@ -3,14 +3,20 @@ package com.marcindziedzic.smartparkingsandroid.mapsFeature;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -24,11 +30,14 @@ import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.settingsFeature.SettingsActivity;
+import com.marcindziedzic.smartparkingsandroid.util.Constants;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissionsUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import jade.core.MicroRuntime;
 import jade.wrapper.ControllerException;
@@ -51,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Button parkNowButton;
     Button navigateToButton;
     Button driveButton;
+    EditText searchEditText;
 
 
     String agentName;
@@ -162,6 +172,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        searchEditText = findViewById(R.id.input_search);
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == KeyEvent.ACTION_DOWN
+                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+
+                    //execute our method for searching
+                    searchForDestination();
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void searchForDestination() {
+        Log.d(TAG, "searchForDestination: ");
+
+        String searchString = searchEditText.getText().toString();
+
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> list = new ArrayList<>();
+        try {
+            list = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            Log.e(TAG, "searchForDestination: IOException: " + e.getMessage());
+        }
+
+        if (list.size() > 0) {
+            Address address = list.get(0);
+
+            Log.d(TAG, "searchForDestination: found a location: " + address.toString());
+            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+
+            addDestinationMarker(new LatLng(address.getLatitude(), address.getLongitude()));
+        }
+    }
+
+    private void addDestinationMarker(LatLng latLng) {
+        parkingMarkers.add(mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(Constants.DESTINATION_TITLE)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_destination))
+        ));
     }
 
     private void startSettingsActivity() {
