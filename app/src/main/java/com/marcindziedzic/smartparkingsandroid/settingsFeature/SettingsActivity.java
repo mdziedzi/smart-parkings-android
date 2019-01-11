@@ -23,6 +23,20 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         initViews();
+
+        getSettingsValues();
+
+    }
+
+    private void getSettingsValues() {
+        SharedPreferences sp = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
+                Activity
+                        .MODE_PRIVATE);
+        seekBarValue = sp.getInt(Constants.PREFERENCES_KEY, -1);
+        if (seekBarValue == -1) {
+            seekBarValue = 50;
+        }
+        seekBar.setProgress(seekBarValue);
     }
 
     private void initViews() {
