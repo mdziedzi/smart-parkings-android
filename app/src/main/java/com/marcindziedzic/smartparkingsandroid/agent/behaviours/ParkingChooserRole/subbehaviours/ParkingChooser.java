@@ -1,8 +1,8 @@
-package com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.subbehaviours;
+package com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole.subbehaviours;
 
 import android.util.Log;
 
-import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole.ParkingChooserRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.util.PreferencesRepository;
@@ -25,18 +25,18 @@ import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_NO
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_NORMALIZATION_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
-public class Reservationist extends OneShotBehaviour {
+public class ParkingChooser extends OneShotBehaviour {
 
-    private static final String TAG = Reservationist.class.getSimpleName();
+    private static final String TAG = ParkingChooser.class.getSimpleName();
 
-    private final ReservationistRole parentRole;
+    private final ParkingChooserRole parentRole;
     private final Localization localization;
     private int nResponders;
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
 
-    public Reservationist(ReservationistRole reservationistRole, Localization localization) {
-        parentRole = reservationistRole;
+    public ParkingChooser(ParkingChooserRole parkingChooserRole, Localization localization) {
+        parentRole = parkingChooserRole;
         this.localization = localization;
     }
 

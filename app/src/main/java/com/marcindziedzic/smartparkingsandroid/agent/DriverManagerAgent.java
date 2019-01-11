@@ -2,8 +2,8 @@ package com.marcindziedzic.smartparkingsandroid.agent;
 
 import android.util.Log;
 
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole.ParkingChooserRole;
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
-import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
 import com.marcindziedzic.smartparkingsandroid.loginFeature.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
@@ -23,8 +23,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
-import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
-import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_NAME_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
@@ -105,27 +103,6 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         }
     }
 
-    // todo: replace this dummy decision algorithm
-    private boolean isBetter(ParkingOffer currProposal, ParkingOffer bestProposal) {
-        float proposalPrice = currProposal.getPrice();
-        float proposalLat = currProposal.getLat();
-        float proposalLon = currProposal.getLon();
-
-        float chosenPrice = bestProposal.getPrice();
-        float chosenLat = bestProposal.getLat();
-        float chosenLon = bestProposal.getLon();
-
-        double proposalDist = Math.sqrt(Math.pow(localization.getLatitude() - proposalLat, 2) + Math.pow(localization.getLongitude() - proposalLon, 2));
-        double chosenDist = Math.sqrt(Math.pow(localization.getLatitude() - chosenLat, 2) + Math.pow(localization.getLongitude() - chosenLon, 2));
-
-        // todo: find the right
-        double currProposalScore = PRICE_FACTOR * proposalPrice + DISTANCE_FACTOR * proposalDist;
-        double bestProposalScore = PRICE_FACTOR * chosenPrice + DISTANCE_FACTOR * chosenDist;
-
-        // the less is better
-        return currProposalScore <= bestProposalScore;
-    }
-
     public Localization getLocalization() {
         return localization;
     }
@@ -164,14 +141,14 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     public void getBestParkingNearby(GetBestParkingCallback callback) {
         Log.d(TAG, "getBestParkingNearbyDestination: ");
         getBestParkingCallback = callback;
-        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL, this.localization));
+        addBehaviour(new ParkingChooserRole(this, ParallelBehaviour.WHEN_ALL, this.localization));
     }
 
     @Override
     public void getBestParkingNearbyDestination(Localization localization, GetBestParkingCallback callback) {
         Log.d(TAG, "getBestParkingNearbyDestination: with localization");
         getBestParkingCallback = callback;
-        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL, localization));
+        addBehaviour(new ParkingChooserRole(this, ParallelBehaviour.WHEN_ALL, localization));
     }
 
     public ArrayList<AID> getActualParkingAids() {
