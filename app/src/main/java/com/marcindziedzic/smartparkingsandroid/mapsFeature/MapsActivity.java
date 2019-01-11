@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -74,6 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationPermissions locationPermissions;
     private ImageButton refreshParkingDataButton;
     private ImageButton settingsButton;
+    private Localization deviceLocation;
+    private Address destinationAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,13 +141,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigateToButton");
-                Localization localization = new Localization(locationPermissions
-                        .getCurrentLocation().getLatitude(), locationPermissions
-                        .getCurrentLocation().getLongitude());
-//                driverManagerInterface.getBestParking(localization, new DriverManagerInterface
-//                        .GetBestParkingCallback() {
+                if (destinationAddress != null) {
+                    driverManagerInterface.getBestParkingNearbyDestination(new Localization
+                            (destinationAddress.getLatitude(), destinationAddress.getLongitude()), new
+                            DriverManagerInterface
+                                    .GetBestParkingCallback() {
+                                @Override
+                                public void onBestParkingFound(final ParkingOffer parkingOffer) {
+                                    Log.d(TAG, "onBestParkingFound: ");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d(TAG, "run: ");
+                                            choosenParking = parkingOffer;
+                                            showProposedParking(parkingOffer);
+                                        }
+                                    });
+                                }
+                            });
+                }
 
-//                });
             }
         });
 
@@ -153,7 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: parkNowButton");
-                driverManagerInterface.getBestParking(new DriverManagerInterface
+                driverManagerInterface.getBestParkingNearby(new DriverManagerInterface
                         .GetBestParkingCallback() { //todo: musisz tu jeszcze jakas lokalizacje
                     // dodać
                     @Override
@@ -209,7 +225,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         || event.getAction() == KeyEvent.KEYCODE_ENTER) {
 
                     //execute our method for searching
-                    searchForDestination();
+                    destinationAddress = searchForDestination();
+
                 }
 
                 return false;
@@ -217,7 +234,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void searchForDestination() {
+    private Address searchForDestination() {
         Log.d(TAG, "searchForDestination: ");
 
         String searchString = searchEditText.getText().toString();
@@ -237,7 +254,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             addDestinationMarker(new LatLng(address.getLatitude(), address.getLongitude()));
+            return address;
         }
+        return null;
     }
 
     private void addDestinationMarker(LatLng latLng) {
@@ -251,14 +270,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void startSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//        SettingsFragment fragment = new SettingsFragment();
-//        fragmentTransaction.replace(R.id.frameLayout, fragment);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
     }
 
     private void bindAgent(String agentName) {
@@ -302,7 +313,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d(TAG, "showAvailableParkings: ");
         for (ParkingOffer p : parkings) {
             Log.d(TAG, "showAvailableParkings: Current parking data: " + p.getLat() + p.getLon());
-            parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLon())).title(String.valueOf(p.getPrice()))));
+            parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(
+                    p.getLat(), p.getLon()))
+                    .title(String.valueOf(p.getPrice() + "$"))));
         }
     }
 
@@ -353,8 +366,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addMarkerOfChosenParking(LatLng latLng) {
         parkingMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(String.valueOf(choosenParking.getPrice()))
-                .snippet("to jest snippet")
+                .title(String.valueOf(choosenParking.getPrice() + "$"))
+                .snippet("wybrany parking")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
         ));
     }
@@ -372,4 +385,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void onLocationChanged(Location location) {
+        deviceLocation = new Localization(location.getLatitude(), location.getLongitude());
+        driverManagerInterface.setLocalization(new Localization(location.getLatitude(), location.getLongitude()));
+    }
 }

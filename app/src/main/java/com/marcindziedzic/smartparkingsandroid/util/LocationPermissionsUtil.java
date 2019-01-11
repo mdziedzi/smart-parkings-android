@@ -2,7 +2,6 @@ package com.marcindziedzic.smartparkingsandroid.util;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -22,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.marcindziedzic.smartparkingsandroid.mapsFeature.MapsActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -31,7 +31,7 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1111;
     private static final float DEFAULT_ZOOM = 12;
-    private final Context context;
+    private final MapsActivity context;
     private boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -42,11 +42,12 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         public void onLocationResult(LocationResult locationResult) {
             mLocation = locationResult.getLastLocation();
             animateCamera(mLocation);
+            context.onLocationChanged(mLocation);
         }
 
     };
 
-    public LocationPermissionsUtil(Context context) {
+    public LocationPermissionsUtil(MapsActivity context) {
         this.context = context;
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);

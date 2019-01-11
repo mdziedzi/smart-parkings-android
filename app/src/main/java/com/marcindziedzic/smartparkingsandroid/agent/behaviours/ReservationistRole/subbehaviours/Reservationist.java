@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
+import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,12 +29,14 @@ public class Reservationist extends OneShotBehaviour {
     private static final String TAG = Reservationist.class.getSimpleName();
 
     private final ReservationistRole parentRole;
+    private final Localization localization;
     private int nResponders;
     private ArrayList<ParkingOffer> parkings = new ArrayList<>();
     private ParkingOffer bestParking;
 
-    public Reservationist(ReservationistRole reservationistRole) {
+    public Reservationist(ReservationistRole reservationistRole, Localization localization) {
         parentRole = reservationistRole;
+        this.localization = localization;
     }
 
     @Override
@@ -157,14 +160,12 @@ public class Reservationist extends OneShotBehaviour {
         float chosenLat = bestProposal.getLat();
         float chosenLon = bestProposal.getLon();
 
-        double proposalDist = Math.sqrt(Math.pow(parentRole.getDriverManagerAgent().getLocalization()
-                .getLatitude() - proposalLat, 2) + Math.pow(parentRole.getDriverManagerAgent()
-                .getLocalization().getLongitude() -
+        double proposalDist = Math.sqrt(Math.pow(localization
+                .getLatitude() - proposalLat, 2) + Math.pow(localization.getLongitude() -
                 proposalLon, 2));
-        double chosenDist = Math.sqrt(Math.pow(parentRole.getDriverManagerAgent().getLocalization().getLatitude()
+        double chosenDist = Math.sqrt(Math.pow(localization.getLatitude()
                 - chosenLat, 2) + Math
-                .pow
-                        (parentRole.getDriverManagerAgent().getLocalization().getLongitude() - chosenLon, 2));
+                .pow(localization.getLongitude() - chosenLon, 2));
 
         // todo: find the right
         double currProposalScore = PRICE_FACTOR * proposalPrice + DISTANCE_FACTOR * proposalDist;

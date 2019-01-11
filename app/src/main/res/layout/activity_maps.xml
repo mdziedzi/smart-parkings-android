@@ -115,7 +115,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="NAWIGUJ"
+        android:text="REZERWUJ I PROWADŹ"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/navigateToButton"
         app:layout_constraintEnd_toEndOf="@+id/parkNowButton"

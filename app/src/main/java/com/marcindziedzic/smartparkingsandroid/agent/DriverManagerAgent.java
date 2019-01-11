@@ -1,6 +1,5 @@
 package com.marcindziedzic.smartparkingsandroid.agent;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
@@ -106,13 +105,6 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         }
     }
 
-    private void sendParkingDataReadyBroadcast() {
-        Intent broadcast = new Intent();
-        broadcast.setAction("PARKING_DATA_READY");
-        Log.d(TAG, "setup: Sending broadcast" + broadcast.getAction());
-        loginPresenter.onParkingChosen();
-    }
-
     // todo: replace this dummy decision algorithm
     private boolean isBetter(ParkingOffer currProposal, ParkingOffer bestProposal) {
         float proposalPrice = currProposal.getPrice();
@@ -164,16 +156,22 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     }
 
     @Override
-    public void getBestParking(GetBestParkingCallback callback) {
-        Log.d(TAG, "getBestParking: ");
-        getBestParkingCallback = callback;
-        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL));
+    public void setLocalization(Localization localization) {
+        this.localization = localization;
     }
 
     @Override
-    public void getBestParking(Localization localization, GetBestParkingCallback callback) {
-        Log.d(TAG, "getBestParking: with localization");
-        // todo
+    public void getBestParkingNearby(GetBestParkingCallback callback) {
+        Log.d(TAG, "getBestParkingNearbyDestination: ");
+        getBestParkingCallback = callback;
+        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL, this.localization));
+    }
+
+    @Override
+    public void getBestParkingNearbyDestination(Localization localization, GetBestParkingCallback callback) {
+        Log.d(TAG, "getBestParkingNearbyDestination: with localization");
+        getBestParkingCallback = callback;
+        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL, localization));
     }
 
     public ArrayList<AID> getActualParkingAids() {
