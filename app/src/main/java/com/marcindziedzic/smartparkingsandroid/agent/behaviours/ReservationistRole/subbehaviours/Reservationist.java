@@ -5,6 +5,7 @@ import android.util.Log;
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ReservationistRole.ReservationistRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.util.Localization;
+import com.marcindziedzic.smartparkingsandroid.util.PreferencesRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,8 +21,8 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
 
-import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_FACTOR;
-import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_NORMALIZATION_FACTOR;
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_NORMALIZATION_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
 public class Reservationist extends OneShotBehaviour {
@@ -167,9 +168,13 @@ public class Reservationist extends OneShotBehaviour {
                 - chosenLat, 2) + Math
                 .pow(localization.getLongitude() - chosenLon, 2));
 
-        // todo: find the right
-        double currProposalScore = PRICE_FACTOR * proposalPrice + DISTANCE_FACTOR * proposalDist;
-        double bestProposalScore = PRICE_FACTOR * chosenPrice + DISTANCE_FACTOR * chosenDist;
+        int priceFactor = PreferencesRepository.getInstance().getPriceFactor();
+        int distanceFactor = PreferencesRepository.getInstance().getDistanceFactor();
+
+        double currProposalScore = priceFactor * PRICE_NORMALIZATION_FACTOR * proposalPrice +
+                distanceFactor * DISTANCE_NORMALIZATION_FACTOR * proposalDist;
+        double bestProposalScore = priceFactor * PRICE_NORMALIZATION_FACTOR * chosenPrice +
+                distanceFactor * DISTANCE_NORMALIZATION_FACTOR * chosenDist;
 
         // the less is better
         return currProposalScore <= bestProposalScore;

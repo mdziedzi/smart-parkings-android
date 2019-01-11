@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 
 import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.util.Constants;
+import com.marcindziedzic.smartparkingsandroid.util.PreferencesRepository;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -81,5 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt(Constants.PREFERENCES_KEY, seekBarValue);
         editor.apply();
+
+        PreferencesRepository.getInstance().setSeekBarValue(seekBarValue);
     }
 }

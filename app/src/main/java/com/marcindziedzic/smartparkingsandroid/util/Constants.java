@@ -37,8 +37,6 @@ public final class Constants {
 
     // DriverManagerAgent.class
     public static int TIMEOUT_WAITING_FOR_PARKING_REPLY = 5000;
-    public static double PRICE_FACTOR = 0.1;
-    public static double DISTANCE_FACTOR = 0.01;
 
     public static final String SD_TYPE_PARKING = "parking";
     public static String IP = "192.168.0.10";
@@ -57,6 +55,8 @@ public final class Constants {
     public static final String PREFERENCES_KEY = "user_preference";
     public static final int DEFAULT_PREFERENCE_VALUE = 50;
 
+    public static final double PRICE_NORMALIZATION_FACTOR = 1;
+    public static final double DISTANCE_NORMALIZATION_FACTOR = 9.266385;
 
 
 

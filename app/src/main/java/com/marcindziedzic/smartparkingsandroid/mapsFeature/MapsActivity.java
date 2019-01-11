@@ -336,7 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d(TAG, "showAvailableParkings: Current parking data: " + p.getLat() + p.getLon());
             parkingMarkers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(
                     p.getLat(), p.getLon()))
-                    .title(String.valueOf(p.getPrice() + "$"))));
+                    .title(String.valueOf(p.getPrice() + "zł"))));
         }
     }
 
@@ -387,7 +387,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addMarkerOfChosenParking(LatLng latLng, float color) {
         parkingMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(String.valueOf(choosenParking.getPrice() + "$"))
+                .title(String.valueOf(choosenParking.getPrice() + "zł"))
                 .snippet("wybrany parking")
                 .icon(BitmapDescriptorFactory.defaultMarker(color)
                 )));
