@@ -77,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageButton settingsButton;
     private Localization deviceLocation;
     private Address destinationAddress;
+    private Button cancelProposalButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +182,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Log.d(TAG, "run: ");
                                 choosenParking = parkingOffer;
                                 showProposedParking(parkingOffer);
+                                cancelProposalButton.setVisibility(View.VISIBLE);
                             }
                         });
 
@@ -232,6 +234,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
+
+        cancelProposalButton = findViewById(R.id.cancelProposalButton);
+        cancelProposalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToButton.setEnabled(true);
+                parkNowButton.setEnabled(true);
+                driveButton.setVisibility(View.INVISIBLE);
+                cancelProposalButton.setVisibility(View.INVISIBLE);
+                uncheckBestParking();
+            }
+        });
+
+    }
+
+    private void uncheckBestParking() {
+        final LatLng latLng = new LatLng(choosenParking.getLat(), choosenParking.getLon());
+        removeMarker(latLng);
+        addMarkerOfChosenParking(latLng, BitmapDescriptorFactory.HUE_RED);
     }
 
     private Address searchForDestination() {
@@ -353,7 +374,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d(TAG, "showProposedParking: ");
         final LatLng latLng = new LatLng(chosenParking.getLat(), chosenParking.getLon());
         removeMarker(latLng);
-        addMarkerOfChosenParking(latLng);
+        addMarkerOfChosenParking(latLng, BitmapDescriptorFactory.HUE_GREEN);
         prepareButtonsForProposal();
     }
 
@@ -363,13 +384,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         driveButton.setVisibility(View.VISIBLE);
     }
 
-    private void addMarkerOfChosenParking(LatLng latLng) {
+    private void addMarkerOfChosenParking(LatLng latLng, float color) {
         parkingMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(String.valueOf(choosenParking.getPrice() + "$"))
                 .snippet("wybrany parking")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        ));
+                .icon(BitmapDescriptorFactory.defaultMarker(color)
+                )));
     }
 
     private void removeMarker(LatLng latLng) {

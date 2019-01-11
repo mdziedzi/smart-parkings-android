@@ -15,11 +15,23 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        map:layout_constraintBottom_toTopOf="@+id/navigateToButton"
+        android:layout_marginBottom="8dp"
+        map:layout_constraintBottom_toTopOf="@+id/textView4"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
         tools:context=".mapsFeature.MapsActivity" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Znajdź parking blisko:"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/cancelProposalButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
         android:id="@+id/relLayout1"
@@ -120,5 +132,15 @@
         app:layout_constraintBottom_toTopOf="@+id/navigateToButton"
         app:layout_constraintEnd_toEndOf="@+id/parkNowButton"
         app:layout_constraintStart_toStartOf="@+id/navigateToButton" />
+
+    <Button
+        android:id="@+id/cancelProposalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ANULUJ"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

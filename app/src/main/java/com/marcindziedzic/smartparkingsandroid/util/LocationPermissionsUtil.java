@@ -30,7 +30,7 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1111;
-    private static final float DEFAULT_ZOOM = 12;
+    private static final float DEFAULT_ZOOM = 14;
     private final MapsActivity context;
     private boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
@@ -57,7 +57,6 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         mMap.animateCamera(cameraUpdate);
-        Toast.makeText(context, "animateCamera:", Toast.LENGTH_SHORT).show();
     }
 
     public boolean getLocationPermission() {
