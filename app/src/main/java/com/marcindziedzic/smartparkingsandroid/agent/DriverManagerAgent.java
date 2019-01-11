@@ -170,6 +170,12 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
         addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL));
     }
 
+    @Override
+    public void getBestParking(Localization localization, GetBestParkingCallback callback) {
+        Log.d(TAG, "getBestParking: with localization");
+        // todo
+    }
+
     public ArrayList<AID> getActualParkingAids() {
 
         // Update list of parkings

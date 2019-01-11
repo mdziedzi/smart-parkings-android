@@ -2,10 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
-    tools:context=".settingsFeature.SettingsActivity">
+    tools:context=".settingsFeature.SettingsFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -84,4 +84,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_apply_changes" />
+
 </android.support.constraint.ConstraintLayout>

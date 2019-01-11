@@ -53,6 +53,12 @@ public final class Constants {
 
     public static final String DESTINATION_TITLE = "miejsce docelowe";
 
+    public static final String SHARED_PREFERENCES_NAME = "app_preferences";
+    public static final String PREFERENCES_KEY = "user_preference";
+    public static final int DEFAULT_PREFERENCE_VALUE = 50;
+
+
+
 
 }
 

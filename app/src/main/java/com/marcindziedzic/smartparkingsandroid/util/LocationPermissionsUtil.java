@@ -25,7 +25,7 @@ import com.google.android.gms.tasks.Task;
 
 import static android.content.ContentValues.TAG;
 
-public class LocationPermissionsUtil extends Activity implements LocationPermissions {
+public class LocationPermissionsUtil extends Activity implements LocationPermissions { //todo rename
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -145,4 +145,8 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
+    @Override
+    public Location getCurrentLocation() {
+        return mLocation;
+    }
 }

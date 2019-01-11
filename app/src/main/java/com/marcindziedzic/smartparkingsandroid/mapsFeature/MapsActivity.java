@@ -1,7 +1,9 @@
 package com.marcindziedzic.smartparkingsandroid.mapsFeature;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -31,6 +33,7 @@ import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.settingsFeature.SettingsActivity;
 import com.marcindziedzic.smartparkingsandroid.util.Constants;
+import com.marcindziedzic.smartparkingsandroid.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissionsUtil;
 
@@ -82,14 +85,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         initViews();
 
+        setDefaultPreferencesIfEmpty();
+
         initPresenter();
         initLocationPermissions();
         mapsPresenter.resolveLocationPermissions(locationPermissions);
 
-
         agentName = getIntent().getStringExtra("agentName");
         bindAgent(agentName);
 
+    }
+
+    private void setDefaultPreferencesIfEmpty() {
+        SharedPreferences sp = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Activity.MODE_PRIVATE);
+        int myIntValue = sp.getInt(Constants.PREFERENCES_KEY, -1);
+        if (myIntValue == -1) {
+            sp.edit().putInt(Constants.PREFERENCES_KEY, Constants.DEFAULT_PREFERENCE_VALUE).apply();
+        }
     }
 
     private void initLocationPermissions() {
@@ -122,13 +134,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         navigateToButton = findViewById(R.id.navigateToButton);
+        navigateToButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigateToButton");
+                Localization localization = new Localization(locationPermissions
+                        .getCurrentLocation().getLatitude(), locationPermissions
+                        .getCurrentLocation().getLongitude());
+//                driverManagerInterface.getBestParking(localization, new DriverManagerInterface
+//                        .GetBestParkingCallback() {
+
+//                });
+            }
+        });
 
         parkNowButton = findViewById(R.id.parkNowButton);
         parkNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: parkNowButton");
-                driverManagerInterface.getBestParking(new DriverManagerInterface.GetBestParkingCallback() {
+                driverManagerInterface.getBestParking(new DriverManagerInterface
+                        .GetBestParkingCallback() { //todo: musisz tu jeszcze jakas lokalizacje
+                    // dodać
                     @Override
                     public void onBestParkingFound(final ParkingOffer parkingOffer) {
                         Log.d(TAG, "onBestParkingFound: ");
@@ -224,16 +251,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void startSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//        SettingsFragment fragment = new SettingsFragment();
+//        fragmentTransaction.replace(R.id.frameLayout, fragment);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
     }
 
     private void bindAgent(String agentName) {
-        try {
-            driverManagerInterface = MicroRuntime.getAgent(agentName)
-                    .getO2AInterface(DriverManagerInterface.class);
-        } catch (StaleProxyException e) {
-            Log.e(TAG, "onCreate: internal error");
-        } catch (ControllerException e) {
-            Log.e(TAG, "onCreate:  server error");
+        if (driverManagerInterface == null) {
+            try {
+                driverManagerInterface = MicroRuntime.getAgent(agentName)
+                        .getO2AInterface(DriverManagerInterface.class);
+            } catch (StaleProxyException e) {
+                Log.e(TAG, "onCreate: internal error");
+            } catch (ControllerException e) {
+                Log.e(TAG, "onCreate:  server error");
+            }
         }
     }
 

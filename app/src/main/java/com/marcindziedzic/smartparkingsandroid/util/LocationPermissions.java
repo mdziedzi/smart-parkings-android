@@ -1,8 +1,10 @@
 package com.marcindziedzic.smartparkingsandroid.util;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.GoogleMap;
 
-public interface LocationPermissions {
+public interface LocationPermissions { //todo rename
     boolean getLocationPermission();
 
     void setLocationEnabled();
@@ -10,4 +12,6 @@ public interface LocationPermissions {
     void setMap(GoogleMap mMap);
 
     void recenter();
+
+    Location getCurrentLocation();
 }
