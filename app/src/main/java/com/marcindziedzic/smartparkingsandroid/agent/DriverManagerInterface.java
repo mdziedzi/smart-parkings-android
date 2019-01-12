@@ -11,6 +11,8 @@ public interface DriverManagerInterface {
 
     void setLocalization(Localization localization);
 
+    void sendReservationRequest();
+
     interface GetParkingsInfoCallback {
         void onParkingDataCollected(ArrayList<ParkingOffer> parkingData);
     }

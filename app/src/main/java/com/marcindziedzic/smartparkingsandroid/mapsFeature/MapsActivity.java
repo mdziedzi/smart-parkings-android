@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import jade.core.AID;
 import jade.core.MicroRuntime;
 import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
@@ -78,6 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Localization deviceLocation;
     private Address destinationAddress;
     private Button cancelProposalButton;
+    private AID choosenParkingAgent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                driverManagerInterface.sendReservationRequest();
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + choosenParking.getLat() + "," + choosenParking.getLon() + "&mode=d");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");

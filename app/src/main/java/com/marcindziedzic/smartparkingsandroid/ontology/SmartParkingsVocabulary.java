@@ -10,4 +10,7 @@ public interface SmartParkingsVocabulary {
     String PARKING_OFFER_PRICE = "price";
     String PARKING_OFFER_LAT = "lat";
     String PARKING_OFFER_LON = "lon";
+
+    String RESERVATION_REQUEST = "ReservationRequest";
+
 }

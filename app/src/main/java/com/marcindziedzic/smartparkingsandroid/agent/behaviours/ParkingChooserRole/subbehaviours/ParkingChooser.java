@@ -134,7 +134,7 @@ public class ParkingChooser extends OneShotBehaviour {
                     bestParking = bestProposal;
                     accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     if (bestParking != null) {
-                        sendParkingHasBeenChosen(bestParking);
+                        sendParkingHasBeenChosen(bestParking, bestProposer);
                     }
                 }
             }
@@ -145,9 +145,9 @@ public class ParkingChooser extends OneShotBehaviour {
         });
     }
 
-    private void sendParkingHasBeenChosen(ParkingOffer bestParking) {
+    private void sendParkingHasBeenChosen(ParkingOffer bestParking, AID sender) {
         Log.d(TAG, "sendParkingHasBeenChosen: ");
-        parentRole.getDriverManagerAgent().onParkingChoosen(bestParking);
+        parentRole.getDriverManagerAgent().onParkingChoosen(bestParking, sender);
         // todo
     }
 

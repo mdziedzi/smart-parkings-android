@@ -23,6 +23,13 @@ public class SmartParkingsOntology extends Ontology implements SmartParkingsVoca
         } catch (OntologyException oe) {
             oe.printStackTrace();
         }
+        try {
+            add(new PredicateSchema(RESERVATION_REQUEST), ReservationRequest.class);
+
+//            PredicateSchema ps = (PredicateSchema) getSchema(RESERVATION_REQUEST);
+        } catch (OntologyException oe) {
+            oe.printStackTrace();
+        }
     }
 
     public static Ontology getInstance() {
