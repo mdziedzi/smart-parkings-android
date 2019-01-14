@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,6 +36,7 @@ import com.marcindziedzic.smartparkingsandroid.util.Constants;
 import com.marcindziedzic.smartparkingsandroid.util.Localization;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissionsUtil;
+import com.marcindziedzic.smartparkingsandroid.util.PreferencesRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (myIntValue == -1) {
             sp.edit().putInt(Constants.PREFERENCES_KEY, Constants.DEFAULT_PREFERENCE_VALUE).apply();
         }
+        PreferencesRepository.getInstance().setSeekBarValue(Constants.DEFAULT_PREFERENCE_VALUE);
     }
 
     private void initLocationPermissions() {
@@ -159,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             Log.d(TAG, "run: ");
                                             choosenParking = parkingOffer;
                                             showProposedParking(parkingOffer);
+                                            cancelProposalButton.setVisibility(View.VISIBLE);
                                         }
                                     });
                                 }
@@ -275,7 +277,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Address address = list.get(0);
 
             Log.d(TAG, "searchForDestination: found a location: " + address.toString());
-            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             addDestinationMarker(new LatLng(address.getLatitude(), address.getLongitude()));
             return address;
@@ -313,7 +314,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is ready");
-        Toast.makeText(this, "Map is ready", Toast.LENGTH_SHORT).show();
 
         mMap = googleMap;
 

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole.ParkingChooserRole;
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.ParkingDataCollectorRole;
-import com.marcindziedzic.smartparkingsandroid.agent.behaviours.Reservationist.ReservationistRole;
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole.TenantRole;
 import com.marcindziedzic.smartparkingsandroid.loginFeature.LoginContract;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
@@ -142,7 +142,7 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
     @Override
     public void sendReservationRequest() {
         Log.d(TAG, "sendReservationRequest: ");
-        addBehaviour(new ReservationistRole(this, ParallelBehaviour.WHEN_ALL));
+        addBehaviour(new TenantRole(this, ParallelBehaviour.WHEN_ALL));
     }
 
     @Override

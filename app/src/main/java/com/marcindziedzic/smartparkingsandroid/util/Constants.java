@@ -39,8 +39,8 @@ public final class Constants {
     public static int TIMEOUT_WAITING_FOR_PARKING_REPLY = 5000;
 
     public static final String SD_TYPE_PARKING = "parking";
-    public static String IP = "192.168.0.10";
-    //    public static String IP = "3.17.29.22";
+    //    public static String IP = "192.168.0.10";
+    public static String IP = "18.218.173.5";
 //    public static final String IP = "192.168.62.41";
     public static String PORT = "1099";
 

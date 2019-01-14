@@ -1,8 +1,8 @@
-package com.marcindziedzic.smartparkingsandroid.agent.behaviours.Reservationist.subbehaviours;
+package com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole.subbehaviours;
 
 import android.util.Log;
 
-import com.marcindziedzic.smartparkingsandroid.agent.behaviours.Reservationist.ReservationistRole;
+import com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole.TenantRole;
 import com.marcindziedzic.smartparkingsandroid.ontology.ReservationRequest;
 import com.marcindziedzic.smartparkingsandroid.ontology.SmartParkingsOntology;
 import com.marcindziedzic.smartparkingsandroid.util.Constants;
@@ -19,14 +19,14 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
-public class Reservationist extends OneShotBehaviour {
+public class Tenant extends OneShotBehaviour {
 
-    private static final String TAG = Reservationist.class.getSimpleName();
+    private static final String TAG = Tenant.class.getSimpleName();
 
-    private final ReservationistRole parentBehaviour;
+    private final TenantRole parentBehaviour;
 
-    public Reservationist(ReservationistRole reservationistRole) {
-        parentBehaviour = reservationistRole;
+    public Tenant(TenantRole tenantRole) {
+        parentBehaviour = tenantRole;
 
     }
 
