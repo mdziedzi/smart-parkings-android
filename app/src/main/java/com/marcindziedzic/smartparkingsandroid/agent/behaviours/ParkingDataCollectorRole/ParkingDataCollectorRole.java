@@ -1,22 +1,22 @@
 package com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole;
 
-import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
+import com.marcindziedzic.smartparkingsandroid.agent.DriverAgent;
 import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.subbehaviours.CollectParkingData;
 
 import jade.core.behaviours.ParallelBehaviour;
 
 public class ParkingDataCollectorRole extends ParallelBehaviour {
 
-    private final DriverManagerAgent driverManagerAgent;
+    private final DriverAgent driverAgent;
 
-    public ParkingDataCollectorRole(DriverManagerAgent a, int endCondition) {
+    public ParkingDataCollectorRole(DriverAgent a, int endCondition) {
         super(a, endCondition);
-        driverManagerAgent = a;
+        driverAgent = a;
 //        this.addSubBehaviour(new SendParkingDataRequest(this));
         addSubBehaviour(new CollectParkingData(this));
     }
 
-    public DriverManagerAgent getDriverManagerAgent() {
-        return driverManagerAgent;
+    public DriverAgent getDriverAgent() {
+        return driverAgent;
     }
 }

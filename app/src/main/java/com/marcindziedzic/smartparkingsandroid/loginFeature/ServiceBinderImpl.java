@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerAgent;
+import com.marcindziedzic.smartparkingsandroid.agent.DriverAgent;
 import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import java.util.logging.Level;
@@ -113,14 +113,14 @@ public class ServiceBinderImpl implements ServiceBinder {
 
         microRuntimeServiceBinder.startAgent(
                 nickname,
-                DriverManagerAgent.class.getName(),
+                DriverAgent.class.getName(),
 //                new Object[]{getApplicationContext(), new Localization(10, 10)}, //todo pobierz lokalizacje
                 new Object[]{loginPresenter, new Localization(52.219157, 21.0112079)}, //todo pobierz lokalizacje
                 new RuntimeCallback<Void>() {
                     @Override
                     public void onSuccess(Void thisIsNull) {
                         logger.log(Level.INFO, "Successfully start of the "
-                                + DriverManagerAgent.class.getName() + "...");
+                                + DriverAgent.class.getName() + "...");
                         try {
                             agentStartupCallback.onSuccess(MicroRuntime
                                     .getAgent(nickname));
@@ -134,7 +134,7 @@ public class ServiceBinderImpl implements ServiceBinder {
                     @Override
                     public void onFailure(Throwable throwable) {
                         logger.log(Level.SEVERE, "Failed to start the "
-                                + DriverManagerAgent.class.getName() + "...");
+                                + DriverAgent.class.getName() + "...");
                         agentStartupCallback.onFailure(throwable);
                     }
                 });

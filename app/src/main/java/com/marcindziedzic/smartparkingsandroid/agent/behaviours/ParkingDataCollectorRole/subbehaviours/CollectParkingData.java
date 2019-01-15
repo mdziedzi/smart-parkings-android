@@ -36,7 +36,7 @@ public class CollectParkingData extends OneShotBehaviour {
     public void action() {
         // Fill the REQUEST message
         final ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-        for (AID receiver : parentBehaviour.getDriverManagerAgent().getActualParkingAids()) {
+        for (AID receiver : parentBehaviour.getDriverAgent().getActualParkingAids()) {
             msg.addReceiver(receiver);
         }
         msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
@@ -85,7 +85,7 @@ public class CollectParkingData extends OneShotBehaviour {
                     // Some responder didn't reply within the specified timeout
                     System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
                 }
-                parentBehaviour.getDriverManagerAgent().updateParkingList(parkingData);
+                parentBehaviour.getDriverAgent().updateParkingList(parkingData);
             }
         });
     }

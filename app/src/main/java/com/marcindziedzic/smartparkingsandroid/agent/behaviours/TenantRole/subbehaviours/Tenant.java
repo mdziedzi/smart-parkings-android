@@ -36,8 +36,8 @@ public class Tenant extends OneShotBehaviour {
 
         // Fill the REQUEST message
         final ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-        AID debug = parentBehaviour.getDriverManagerAgent().getBestParkingAgent();
-        msg.addReceiver(parentBehaviour.getDriverManagerAgent().getBestParkingAgent());
+        AID debug = parentBehaviour.getDriverAgent().getBestParkingAgent();
+        msg.addReceiver(parentBehaviour.getDriverAgent().getBestParkingAgent());
         msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
         msg.setReplyByDate(new Date(System.currentTimeMillis() + Constants
                 .REQUEST_INITIATOR_TIMEOUT));

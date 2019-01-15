@@ -5,7 +5,7 @@ import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import java.util.ArrayList;
 
-public interface DriverManagerInterface {
+public interface DriverInterface {
 
     void getParkings(GetParkingsInfoCallback callback);
 
@@ -13,15 +13,15 @@ public interface DriverManagerInterface {
 
     void sendReservationRequest();
 
-    interface GetParkingsInfoCallback {
-        void onParkingDataCollected(ArrayList<ParkingOffer> parkingData);
-    }
-
-    void getBestParkingNearby(GetBestParkingCallback callback); // todo delete
+    void getBestParkingNearby(GetBestParkingCallback callback);
 
     void getBestParkingNearbyDestination(Localization localization, GetBestParkingCallback callback);
 
     interface GetBestParkingCallback {
         void onBestParkingFound(ParkingOffer parkingOffer);
+    }
+
+    interface GetParkingsInfoCallback {
+        void onParkingDataCollected(ArrayList<ParkingOffer> parkingData);
     }
 }

@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.marcindziedzic.smartparkingsandroid.R;
-import com.marcindziedzic.smartparkingsandroid.agent.DriverManagerInterface;
+import com.marcindziedzic.smartparkingsandroid.agent.DriverInterface;
 import com.marcindziedzic.smartparkingsandroid.ontology.ParkingOffer;
 import com.marcindziedzic.smartparkingsandroid.settingsFeature.SettingsActivity;
 import com.marcindziedzic.smartparkingsandroid.util.Constants;
@@ -69,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     String agentName;
-    DriverManagerInterface driverManagerInterface;
+    DriverInterface driverInterface;
     private ParkingOffer choosenParking;
     private ArrayList<Marker> parkingMarkers = new ArrayList<>();
     private MapsContract.Presenter mapsPresenter;
@@ -132,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                driverManagerInterface.sendReservationRequest();
+                driverInterface.sendReservationRequest();
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + choosenParking.getLat() + "," + choosenParking.getLon() + "&mode=d");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -147,9 +147,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigateToButton");
                 if (destinationAddress != null) {
-                    driverManagerInterface.getBestParkingNearbyDestination(new Localization
+                    driverInterface.getBestParkingNearbyDestination(new Localization
                             (destinationAddress.getLatitude(), destinationAddress.getLongitude()), new
-                            DriverManagerInterface
+                            DriverInterface
                                     .GetBestParkingCallback() {
                                 @Override
                                 public void onBestParkingFound(final ParkingOffer parkingOffer) {
@@ -175,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: parkNowButton");
-                driverManagerInterface.getBestParkingNearby(new DriverManagerInterface
+                driverInterface.getBestParkingNearby(new DriverInterface
                         .GetBestParkingCallback() { //todo: musisz tu jeszcze jakas lokalizacje
                     // dodać
                     @Override
@@ -200,7 +200,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         refreshParkingDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                driverManagerInterface.getParkings(new DriverManagerInterface.GetParkingsInfoCallback() {
+                driverInterface.getParkings(new DriverInterface.GetParkingsInfoCallback() {
                     @Override
                     public void onParkingDataCollected(final ArrayList<ParkingOffer> parkingData) {
                         runOnUiThread(new Runnable() {
@@ -298,10 +298,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void bindAgent(String agentName) {
-        if (driverManagerInterface == null) {
+        if (driverInterface == null) {
             try {
-                driverManagerInterface = MicroRuntime.getAgent(agentName)
-                        .getO2AInterface(DriverManagerInterface.class);
+                driverInterface = MicroRuntime.getAgent(agentName)
+                        .getO2AInterface(DriverInterface.class);
             } catch (StaleProxyException e) {
                 Log.e(TAG, "onCreate: internal error");
             } catch (ControllerException e) {
@@ -320,7 +320,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationPermissions.setMap(mMap);
         mapsPresenter.setLocationEnabled(locationPermissions);
 
-        driverManagerInterface.getParkings(new DriverManagerInterface.GetParkingsInfoCallback() {
+        driverInterface.getParkings(new DriverInterface.GetParkingsInfoCallback() {
             @Override
             public void onParkingDataCollected(final ArrayList<ParkingOffer> parkingData) {
                 runOnUiThread(new Runnable() {
@@ -411,6 +411,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onLocationChanged(Location location) {
         deviceLocation = new Localization(location.getLatitude(), location.getLongitude());
-        driverManagerInterface.setLocalization(new Localization(location.getLatitude(), location.getLongitude()));
+        driverInterface.setLocalization(new Localization(location.getLatitude(), location.getLongitude()));
     }
 }

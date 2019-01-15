@@ -28,9 +28,9 @@ import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_NAME_DRI
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
 
-public class DriverManagerAgent extends Agent implements DriverManagerInterface {
+public class DriverAgent extends Agent implements DriverInterface {
 
-    private static final String TAG = "DriverManagerAgent";
+    private static final String TAG = "DriverAgent";
 
     private Localization localization;
 
@@ -65,13 +65,13 @@ public class DriverManagerAgent extends Agent implements DriverManagerInterface 
                 }
                 if (args.length > 1) {
                     this.localization = (Localization) args[1];
-                    System.out.println("Created DriverManagerAgent " + getAID().getName() + " with lat: " + this.localization.getLatitude()
+                    System.out.println("Created DriverAgent " + getAID().getName() + " with lat: " + this.localization.getLatitude()
                             + " lon: " + this.localization.getLongitude());
                 }
             }
         }
 
-        registerO2AInterface(DriverManagerInterface.class, this);
+        registerO2AInterface(DriverInterface.class, this);
 
         registerDriverAgentInDf();
 
