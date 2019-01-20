@@ -35,19 +35,16 @@ public final class Constants {
     public static double MIN_PARKING_PRICE = 0.2;
     public static double STATIC_PARKING_PRICE = 0.2;
 
-    // DriverAgent.class
-    public static int TIMEOUT_WAITING_FOR_PARKING_REPLY = 5000;
+    public static final int REQUEST_INITIATOR_TIMEOUT = 200000;
 
     public static final String SD_TYPE_PARKING = "parking";
-    //    public static String IP = "192.168.0.10";
-    public static String IP = "18.218.173.5";
-//    public static final String IP = "192.168.62.41";
+    public static final int INFORMATOR_INTERVAL = 10000;
     public static String PORT = "1099";
 
     public static final String SD_TYPE_DRIVER = "driver";
     public static final String SD_NAME_DRIVER = "JADE-driver";
-
-    public static final int REQUEST_INITIATOR_TIMEOUT = 5000;
+    // DriverAgent.class
+    public static int TIMEOUT_WAITING_FOR_PARKING_REPLY = 200000;
 
     public static final String DESTINATION_TITLE = "miejsce docelowe";
 
@@ -57,6 +54,9 @@ public final class Constants {
 
     public static final double PRICE_NORMALIZATION_FACTOR = 1;
     public static final double DISTANCE_NORMALIZATION_FACTOR = 9.266385;
+    //        public static String IP = "192.168.0.10";
+    public static String IP = "18.218.173.5";
+
 
 
 

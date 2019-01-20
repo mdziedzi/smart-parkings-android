@@ -59,6 +59,8 @@ public class ParkingChooser extends OneShotBehaviour {
         currentMessage.setReplyByDate(new Date(System.currentTimeMillis() + TIMEOUT_WAITING_FOR_PARKING_REPLY));
         currentMessage.setContent("Give my info about you, please.");
 
+        final long startTime = System.nanoTime();
+
         parentRole.addSubBehaviour(new ContractNetInitiator(getAgent(), currentMessage) {
 
             protected void handlePropose(ACLMessage propose, Vector v) {
@@ -128,6 +130,9 @@ public class ParkingChooser extends OneShotBehaviour {
                         }
                     }
                 }
+                double interval = System.nanoTime() - startTime;
+                Log.d(TAG, "ParkingChooser interval 1 is: " + interval / 1000000000);
+
                 // Accept the proposal of the best proposer
                 if (accept != null) {
                     System.out.println("Accepting proposal " + bestProposal + " from responder " + bestProposer.getName());
@@ -137,6 +142,9 @@ public class ParkingChooser extends OneShotBehaviour {
                         sendParkingHasBeenChosen(bestParking, bestProposer);
                     }
                 }
+
+                interval = System.nanoTime() - startTime;
+                Log.d(TAG, "ParkingChooser interval 2 is: " + interval / 1000000000);
             }
 
             protected void handleInform(ACLMessage inform) {

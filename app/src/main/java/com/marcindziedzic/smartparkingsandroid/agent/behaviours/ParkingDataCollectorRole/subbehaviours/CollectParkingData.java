@@ -34,17 +34,28 @@ public class CollectParkingData extends OneShotBehaviour {
     //https://github.com/mihaimaruseac/JADE-ARIA/blob/master/src/examples/protocols/FIPARequestInitiatorAgent.java
     @Override
     public void action() {
+
+        final long startTime = System.nanoTime();
+
         // Fill the REQUEST message
         final ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-        for (AID receiver : parentBehaviour.getDriverAgent().getActualParkingAids()) {
+        ArrayList<AID> actualParkings = parentBehaviour.getDriverAgent().getActualParkingAids();
+        Log.d(TAG, "action: gettingActualParkings " + actualParkings.size());
+        for (AID receiver : actualParkings) {
             msg.addReceiver(receiver);
         }
+
+        long interval = System.nanoTime() - startTime;
+        Log.d(TAG, "getting parking aids interval: " + interval / 1000000000);
+
         msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
         // We want to receive a reply in 1 secs
         msg.setReplyByDate(new Date(System.currentTimeMillis() + Constants
                 .REQUEST_INITIATOR_TIMEOUT));
 
         prepareMsg(msg);
+
+        final long startTime2 = System.nanoTime();
 
         parentBehaviour.addSubBehaviour(new AchieveREInitiator(getAgent(), msg) {
             protected void handleInform(ACLMessage inform) {
@@ -85,7 +96,11 @@ public class CollectParkingData extends OneShotBehaviour {
                     // Some responder didn't reply within the specified timeout
                     System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
                 }
+                double interval = System.nanoTime() - startTime2;
+                Log.d(TAG, "CollectParkingData interval is: " + interval / 1000000000);
                 parentBehaviour.getDriverAgent().updateParkingList(parkingData);
+//                double interval = System.nanoTime() - startTime;
+//                Log.d(TAG, "CollectParkingData interval is: " + interval / 1000000000);
             }
         });
     }

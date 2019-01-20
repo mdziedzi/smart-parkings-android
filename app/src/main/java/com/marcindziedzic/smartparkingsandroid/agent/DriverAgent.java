@@ -20,10 +20,12 @@ import jade.core.Agent;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
+import static com.marcindziedzic.smartparkingsandroid.util.Constants.N_GENERATED_PARKINGS;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_NAME_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
@@ -167,10 +169,15 @@ public class DriverAgent extends Agent implements DriverInterface {
         templateServiceDescription.setType(SD_TYPE_PARKING);
         searchTemplate.addServices(templateServiceDescription);
 
+        SearchConstraints sc = new SearchConstraints();
+        sc.setMaxDepth((long) 10000000);
+        sc.setMaxResults((long) 10000000);
+
         DFAgentDescription[] result = new DFAgentDescription[0];
         try {
-            result = DFService.search(this, searchTemplate);
+            result = DFService.search(this, searchTemplate, sc);
         } catch (FIPAException e) {
+            Log.d(TAG, "getActualParkingAids: " + result.length);
             e.printStackTrace();
         }
 
@@ -178,6 +185,7 @@ public class DriverAgent extends Agent implements DriverInterface {
         for (DFAgentDescription aResult : result) {
             parkingAidArray.add(aResult.getName());
         }
+        Log.d(TAG, "getActualParkingAids: " + parkingAidArray.size());
         return parkingAidArray;
     }
 
@@ -188,6 +196,7 @@ public class DriverAgent extends Agent implements DriverInterface {
      */
     public void updateParkingList(ArrayList<ParkingOffer> parkingData) {
         Log.d(TAG, "updateParkingList: ");
+        Log.d(TAG, "updateParkingList: Collect " + parkingData.size() + " parkings out of " + N_GENERATED_PARKINGS);
         parkings = parkingData;
         if (getParkingsInfoCallback != null) {
             getParkingsInfoCallback.onParkingDataCollected(parkings);
