@@ -6,6 +6,9 @@ import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import jade.content.schema.PredicateSchema;
 
+/**
+ * Main ontology class. It describes ontology used in project.
+ */
 public class SmartParkingsOntology extends Ontology implements SmartParkingsVocabulary {
 
     // The singleton instance of this ontology

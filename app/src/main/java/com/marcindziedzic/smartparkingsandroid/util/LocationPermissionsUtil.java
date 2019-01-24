@@ -25,7 +25,10 @@ import com.marcindziedzic.smartparkingsandroid.mapsFeature.MapsActivity;
 
 import static android.content.ContentValues.TAG;
 
-public class LocationPermissionsUtil extends Activity implements LocationPermissions { //todo rename
+/**
+ * Utility clas to resolve all lacation permissions and workflow.
+ */
+public class LocationPermissionsUtil extends Activity implements LocationPermissions {
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -53,12 +56,18 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    /**
+     * Animates camera to the location.
+     *
+     * @param lastLocation Location where the camera should go.
+     */
     private void animateCamera(Location lastLocation) {
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         mMap.animateCamera(cameraUpdate);
     }
 
+    @Override
     public boolean getLocationPermission() {
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -108,6 +117,9 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         animateCamera(mLocation);
     }
 
+    /**
+     * Gets the current device location.
+     */
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
@@ -140,6 +152,12 @@ public class LocationPermissionsUtil extends Activity implements LocationPermiss
         }
     }
 
+    /**
+     * Moves camera to specific localization.
+     *
+     * @param latLng Localization where to move.
+     * @param zoom   Level of zoom on the map.
+     */
     public void moveCamera(LatLng latLng, float zoom) {
         Log.d(TAG, "moveCamera: moving camera to lat: " + latLng.latitude + ", lng " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));

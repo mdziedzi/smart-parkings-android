@@ -1,5 +1,8 @@
 package com.marcindziedzic.smartparkingsandroid.util;
 
+/**
+ * Model class describes geographical location in the project.
+ */
 public class Localization {
 
     private double latitude;

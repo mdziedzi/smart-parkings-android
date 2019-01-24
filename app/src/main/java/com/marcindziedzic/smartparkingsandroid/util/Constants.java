@@ -1,5 +1,8 @@
 package com.marcindziedzic.smartparkingsandroid.util;
 
+/**
+ * Class contains all constants from the project.
+ */
 public final class Constants {
 
     //Boot.class
@@ -56,8 +59,6 @@ public final class Constants {
     public static final double DISTANCE_NORMALIZATION_FACTOR = 9.266385;
     //        public static String IP = "192.168.0.10";
     public static String IP = "18.218.173.5";
-
-
 
 
 }

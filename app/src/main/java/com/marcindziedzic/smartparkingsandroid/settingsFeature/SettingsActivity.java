@@ -12,6 +12,9 @@ import com.marcindziedzic.smartparkingsandroid.R;
 import com.marcindziedzic.smartparkingsandroid.util.Constants;
 import com.marcindziedzic.smartparkingsandroid.util.PreferencesRepository;
 
+/**
+ * Activity where user can set its preferences about choosing the best parking.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     private SeekBar seekBar;
@@ -29,6 +32,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Gets settings values from the SharedPreferences
+     *
+     * @see SharedPreferences
+     */
     private void getSettingsValues() {
         SharedPreferences sp = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
                 Activity
@@ -40,6 +48,9 @@ public class SettingsActivity extends AppCompatActivity {
         seekBar.setProgress(seekBarValue);
     }
 
+    /**
+     * Initalize views: seek bar and buttons. Sets them listeners.
+     */
     private void initViews() {
         seekBar = findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -69,12 +80,18 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Returns to MapsActivity
+     *
+     * @see com.marcindziedzic.smartparkingsandroid.mapsFeature.MapsActivity
+     */
     private void goToMapsActivity() {
         finish();
-//        Intent intent = new Intent(this, MapsActivity.class);
-//        startActivity(intent);
     }
 
+    /**
+     * Persist value form seek bar to Shared Preferences
+     */
     private void saveValueToSharedPreferences() {
         SharedPreferences sp = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
                 Activity

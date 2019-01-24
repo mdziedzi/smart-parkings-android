@@ -2,12 +2,26 @@ package com.marcindziedzic.smartparkingsandroid.ontology;
 
 import jade.content.AgentAction;
 
+/**
+ * Represents part of Parking Ontology.
+ * Agents uses this to understand the offer which is sent from parking to driver.
+ */
+
 public class ParkingOffer implements AgentAction {
 
+    /**
+     * Current price of parking place per hour. The price is in PLN.
+     */
     private float price;
 
+    /**
+     * Latitude - used for geolocation.
+     */
     private float lat;
 
+    /**
+     * Longitude - used for geolocation.
+     */
     private float lon;
 
     public float getPrice() {

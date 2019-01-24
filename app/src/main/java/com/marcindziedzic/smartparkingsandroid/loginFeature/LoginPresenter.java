@@ -1,5 +1,8 @@
 package com.marcindziedzic.smartparkingsandroid.loginFeature;
 
+/**
+ * Presenter class of the login feature.
+ */
 public class LoginPresenter implements LoginContract.UserActionsListener {
 
     private LoginContract.View mLoginView;

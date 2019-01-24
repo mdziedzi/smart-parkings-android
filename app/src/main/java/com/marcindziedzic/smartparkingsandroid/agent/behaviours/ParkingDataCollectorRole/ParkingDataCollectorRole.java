@@ -5,6 +5,10 @@ import com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataColle
 
 import jade.core.behaviours.ParallelBehaviour;
 
+/**
+ * Implementation of Gaia project role - ParkingDataCollector.
+ * ParkingDataCollector is responsible for collecting info about nearby parking places.
+ */
 public class ParkingDataCollectorRole extends ParallelBehaviour {
 
     private final DriverAgent driverAgent;
@@ -12,7 +16,6 @@ public class ParkingDataCollectorRole extends ParallelBehaviour {
     public ParkingDataCollectorRole(DriverAgent a, int endCondition) {
         super(a, endCondition);
         driverAgent = a;
-//        this.addSubBehaviour(new SendParkingDataRequest(this));
         addSubBehaviour(new CollectParkingData(this));
     }
 

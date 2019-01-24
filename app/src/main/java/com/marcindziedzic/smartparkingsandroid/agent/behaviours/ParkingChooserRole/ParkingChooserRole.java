@@ -6,6 +6,10 @@ import com.marcindziedzic.smartparkingsandroid.util.Localization;
 
 import jade.core.behaviours.ParallelBehaviour;
 
+/**
+ * Implementation of Gaia project role - ParkingChooser.
+ * ParkingChooser is responsible for choosing the best parking.
+ */
 public class ParkingChooserRole extends ParallelBehaviour {
 
     private final DriverAgent driverMangerAgent;
@@ -13,9 +17,7 @@ public class ParkingChooserRole extends ParallelBehaviour {
     public ParkingChooserRole(DriverAgent a, int endCondition, Localization localization) {
         super(a, endCondition);
         driverMangerAgent = a;
-        //updateDataStore();
         addSubBehaviour(new ParkingChooser(this, localization));
-
     }
 
     public DriverAgent getDriverManagerAgent() {

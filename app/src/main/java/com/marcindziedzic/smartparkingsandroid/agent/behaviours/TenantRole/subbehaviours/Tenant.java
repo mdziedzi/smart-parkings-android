@@ -19,6 +19,11 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
+/**
+ * Subbehaviour of Tenant.
+ * Sends request for booking.
+ * Communication i based on Request Protocol.
+ */
 public class Tenant extends OneShotBehaviour {
 
     private static final String TAG = Tenant.class.getSimpleName();
@@ -80,6 +85,13 @@ public class Tenant extends OneShotBehaviour {
 
     }
 
+    /**
+     * Fill the message with the appropriate content. In this case it is ReservationRequest
+     * object.
+     *
+     * @param msg Message to fill
+     * @see ReservationRequest
+     */
     private void prepareMsg(ACLMessage msg) {
         msg.setLanguage(new SLCodec().getName());
         msg.setOntology(SmartParkingsOntology.getInstance().getName());

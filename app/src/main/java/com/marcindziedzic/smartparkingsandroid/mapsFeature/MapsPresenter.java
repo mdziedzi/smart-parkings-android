@@ -2,6 +2,9 @@ package com.marcindziedzic.smartparkingsandroid.mapsFeature;
 
 import com.marcindziedzic.smartparkingsandroid.util.LocationPermissions;
 
+/**
+ * Presenter of the maps feature.
+ */
 public class MapsPresenter implements MapsContract.Presenter {
     private final MapsContract.View mapsView;
 

@@ -48,8 +48,11 @@ import jade.core.MicroRuntime;
 import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
+/**
+ * Activity that shows map and everything corresponded with it. This is the main activity in the
+ * app.
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, MapsContract.View {
-
 
     private static final String TAG = "MapsActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -102,6 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Sets default user preferences if the SharedPreferences is empty. It will be empty when the
+     * app is running first time after installation.
+     */
     private void setDefaultPreferencesIfEmpty() {
         SharedPreferences sp = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Activity.MODE_PRIVATE);
         int myIntValue = sp.getInt(Constants.PREFERENCES_KEY, -1);
@@ -111,14 +118,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         PreferencesRepository.getInstance().setSeekBarValue(Constants.DEFAULT_PREFERENCE_VALUE);
     }
 
+    /**
+     * Initializes location permissions.
+     */
     private void initLocationPermissions() {
         locationPermissions = new LocationPermissionsUtil(this);
     }
 
+    /**
+     * Initializes presenter.
+     */
     private void initPresenter() {
         mapsPresenter = new MapsPresenter(this);
     }
 
+    /**
+     * Initialize all views e.g. Buttons. All views have set the listeners here.
+     */
     private void initViews() {
         recentreButton = findViewById(R.id.recentreButton);
         recentreButton.setOnClickListener(new View.OnClickListener() {
@@ -254,12 +270,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Mark out the chosen best parking. Used when user cancel the reservation.
+     */
     private void uncheckBestParking() {
         final LatLng latLng = new LatLng(choosenParking.getLat(), choosenParking.getLon());
         removeMarker(latLng);
         addMarkerOfChosenParking(latLng, BitmapDescriptorFactory.HUE_RED);
     }
 
+    /**
+     * Searches for destination that the user typed in TextField.
+     *
+     * @return Address of the destination.
+     */
     private Address searchForDestination() {
         Log.d(TAG, "searchForDestination: ");
 
@@ -284,6 +308,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return null;
     }
 
+    /**
+     * Adds destination marker.
+     *
+     * @param latLng Localization of the destination.
+     */
     private void addDestinationMarker(LatLng latLng) {
         parkingMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(latLng)
@@ -292,11 +321,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ));
     }
 
+    /**
+     * Starts the settings activity.
+     */
     private void startSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Binds agent to the DriverInterface
+     * @see DriverInterface
+     * @param agentName Name of the agent.
+     */
     private void bindAgent(String agentName) {
         if (driverInterface == null) {
             try {
@@ -333,6 +370,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    /**
+     * Shows aviable parings on map.
+     * @param parkings Collection of the parkings to show.
+     */
     private void showAvailableParkings(ArrayList<ParkingOffer> parkings) {
         Log.d(TAG, "showAvailableParkings: ");
         for (ParkingOffer p : parkings) {
@@ -367,12 +408,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Initialize the map.
+     */
     private void initMap() {
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
+    /**
+     * Show proposed parking on map. It is marked as green marker.
+     * @param chosenParking
+     */
     private void showProposedParking(ParkingOffer chosenParking) {
         Log.d(TAG, "showProposedParking: ");
         final LatLng latLng = new LatLng(chosenParking.getLat(), chosenParking.getLon());
@@ -381,12 +429,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         prepareButtonsForProposal();
     }
 
+    /**
+     * Sets visibility of the buttons when app show the proposal.
+     */
     private void prepareButtonsForProposal() {
         parkNowButton.setEnabled(false);
         navigateToButton.setEnabled(false);
         driveButton.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Add marker of choosen parking on map.
+     * @param latLng Localization of the chosen parking
+     * @param color Color of the marker.
+     */
     private void addMarkerOfChosenParking(LatLng latLng, float color) {
         parkingMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(latLng)
@@ -396,6 +452,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 )));
     }
 
+    /**
+     * Removes marker form the map.
+     * @param latLng Localiztion of the parking to remove from map.
+     */
     private void removeMarker(LatLng latLng) {
         Iterator<Marker> markerIterator = parkingMarkers.iterator();
         Marker currentMarker;
@@ -409,6 +469,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Method called after location of the device has changed.
+     * @param location Current location of the device.
+     */
     public void onLocationChanged(Location location) {
         deviceLocation = new Localization(location.getLatitude(), location.getLongitude());
         driverInterface.setLocalization(new Localization(location.getLatitude(), location.getLongitude()));

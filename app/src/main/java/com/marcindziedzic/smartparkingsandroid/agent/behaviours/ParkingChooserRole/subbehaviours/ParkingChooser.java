@@ -25,6 +25,12 @@ import static com.marcindziedzic.smartparkingsandroid.util.Constants.DISTANCE_NO
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.PRICE_NORMALIZATION_FACTOR;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.TIMEOUT_WAITING_FOR_PARKING_REPLY;
 
+/**
+ * Subbehaviour of ParkingChooser.
+ * Sends request for parking offer to every parking then chooses the best parking.
+ * After choosing the best parking it shows it on map.
+ * Communication i based on Contract Net Protocol.
+ */
 public class ParkingChooser extends OneShotBehaviour {
 
     private static final String TAG = ParkingChooser.class.getSimpleName();
@@ -153,12 +159,24 @@ public class ParkingChooser extends OneShotBehaviour {
         });
     }
 
+    /**
+     * Notifies parent behaviour that the parking has been chosen.
+     *
+     * @param bestParking Best parking due to choosing algorithm
+     * @param sender      Agent that has sent the best offer.
+     */
     private void sendParkingHasBeenChosen(ParkingOffer bestParking, AID sender) {
         Log.d(TAG, "sendParkingHasBeenChosen: ");
         parentRole.getDriverManagerAgent().onParkingChoosen(bestParking, sender);
-        // todo
     }
 
+    /**
+     * Algorithm that compares offers due to driver's preferences.
+     *
+     * @param currProposal Analyzed offer.
+     * @param bestProposal Best offer so far.
+     * @return True if the analyzed offer is better than the best so far.
+     */
     private boolean isBetter(ParkingOffer currProposal, ParkingOffer bestProposal) {
         Log.v(TAG, "isBetter: ");
         float proposalPrice = currProposal.getPrice();

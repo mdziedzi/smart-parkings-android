@@ -12,6 +12,9 @@ import com.marcindziedzic.smartparkingsandroid.util.GPSStatus;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Util to check Privileges for the GPS
+ */
 public class LocationServicesUtil implements LocationServices {
 
     private static final int ERROR_DIALOG_REQUEST = 9001;

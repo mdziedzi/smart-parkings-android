@@ -5,6 +5,10 @@ import com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole.subbe
 
 import jade.core.behaviours.ParallelBehaviour;
 
+/**
+ * Implementation of Gaia project role - Tenant.
+ * Tenant is responsible for performing the reservation on chosen parking.
+ */
 public class TenantRole extends ParallelBehaviour {
 
     private final DriverAgent driverAgent;

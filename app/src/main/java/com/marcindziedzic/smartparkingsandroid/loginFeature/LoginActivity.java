@@ -15,7 +15,6 @@ import com.marcindziedzic.smartparkingsandroid.mapsFeature.MapsActivity;
 
 /**
  * This activity enables user to log in or sign up to the application.
- * @author Marcin Dziedzic
  */
 public class LoginActivity extends AppCompatActivity implements LoginContract.View {
 

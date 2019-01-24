@@ -30,6 +30,9 @@ import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_NAME_DRI
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_DRIVER;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.SD_TYPE_PARKING;
 
+/**
+ * Agent that manages the driver environment.
+ */
 public class DriverAgent extends Agent implements DriverInterface {
 
     private static final String TAG = "DriverAgent";
@@ -88,10 +91,16 @@ public class DriverAgent extends Agent implements DriverInterface {
 //
     }
 
+    /**
+     * Inits the android app modules after the agent is successfully created.
+     */
     private void initAndroidAppEnvironment() {
         loginPresenter.onAgentStarted();
     }
 
+    /**
+     * Registers driver agent in Directory Facilitator. It is necessary to find that agent.
+     */
     private void registerDriverAgentInDf() {
         // Register the parking service in the yellow pages
         DFAgentDescription myTemplate = new DFAgentDescription();
@@ -124,7 +133,7 @@ public class DriverAgent extends Agent implements DriverInterface {
         // Printout a dismissal message
         System.out.println("Driver-agent " + getAID().getName() + " terminating.");
     }
-    
+
     public ArrayList<ParkingOffer> getParkings() {
         return parkings;
     }
@@ -133,7 +142,6 @@ public class DriverAgent extends Agent implements DriverInterface {
     public void getParkings(GetParkingsInfoCallback callback) {
         getParkingsInfoCallback = callback;
         addBehaviour(new ParkingDataCollectorRole(this, ParallelBehaviour.WHEN_ALL));
-//        callback.onParkingDataCollected(parkings);
     }
 
     @Override
@@ -161,6 +169,12 @@ public class DriverAgent extends Agent implements DriverInterface {
         addBehaviour(new ParkingChooserRole(this, ParallelBehaviour.WHEN_ALL, localization));
     }
 
+    /**
+     * Search for the parking agents.
+     *
+     * @return All AIDs founded.
+     * @see AID
+     */
     public ArrayList<AID> getActualParkingAids() {
 
         // Update list of parkings
@@ -191,7 +205,6 @@ public class DriverAgent extends Agent implements DriverInterface {
 
     /**
      * Enables to perform updating parking list.
-     *
      * @param parkingData Data about available parkings.
      */
     public void updateParkingList(ArrayList<ParkingOffer> parkingData) {
@@ -201,11 +214,15 @@ public class DriverAgent extends Agent implements DriverInterface {
         if (getParkingsInfoCallback != null) {
             getParkingsInfoCallback.onParkingDataCollected(parkings);
         }
-
     }
 
+    /**
+     * It should be called after choosing the parking to update parking state.
+     *
+     * @param bestParking Best parking offer
+     * @param sender      Agent which send the best offer.
+     */
     public void onParkingChoosen(ParkingOffer bestParking, AID sender) {
-        // todo wrzucic wszystkie metody które wywołuą role do interfejsu
         Log.d(TAG, "onParkingChoosen: ");
         this.bestParking = bestParking;
         this.bestParkingAgent = sender;

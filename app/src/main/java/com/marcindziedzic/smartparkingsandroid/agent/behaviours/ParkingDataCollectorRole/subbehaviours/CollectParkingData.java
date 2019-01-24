@@ -21,6 +21,12 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
+/**
+ * Subbehaviour of ParkingDataCollector.
+ * Sends request for parking info to every parking.
+ * When the data is collected it is showed on the map.
+ * Communication i based on Request Protocol.
+ */
 public class CollectParkingData extends OneShotBehaviour {
     private static final String TAG = OneShotBehaviour.class.getSimpleName();
     private final ParkingDataCollectorRole parentBehaviour;
@@ -31,7 +37,6 @@ public class CollectParkingData extends OneShotBehaviour {
         parentBehaviour = parkingDataCollectorRole;
     }
 
-    //https://github.com/mihaimaruseac/JADE-ARIA/blob/master/src/examples/protocols/FIPARequestInitiatorAgent.java
     @Override
     public void action() {
 
@@ -99,13 +104,16 @@ public class CollectParkingData extends OneShotBehaviour {
                 double interval = System.nanoTime() - startTime2;
                 Log.d(TAG, "CollectParkingData interval is: " + interval / 1000000000);
                 parentBehaviour.getDriverAgent().updateParkingList(parkingData);
-//                double interval = System.nanoTime() - startTime;
-//                Log.d(TAG, "CollectParkingData interval is: " + interval / 1000000000);
             }
         });
     }
 
-
+    /**
+     * Prepares message for sending. Thanks to that the message could be received by the
+     * appropriate role.
+     *
+     * @param msg Message to fill.
+     */
     private void prepareMsg(ACLMessage msg) {
         msg.setLanguage(new SLCodec().getName());
         msg.setOntology(SmartParkingsOntology.getInstance().getName());

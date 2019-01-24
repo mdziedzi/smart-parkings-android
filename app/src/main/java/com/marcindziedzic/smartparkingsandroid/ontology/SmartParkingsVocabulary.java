@@ -1,5 +1,8 @@
 package com.marcindziedzic.smartparkingsandroid.ontology;
 
+/**
+ * Vocabulary used in project.
+ */
 public interface SmartParkingsVocabulary {
 
     // ONTOLOGY NAME

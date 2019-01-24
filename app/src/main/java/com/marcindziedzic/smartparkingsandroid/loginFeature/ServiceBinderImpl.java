@@ -25,6 +25,9 @@ import jade.wrapper.ControllerException;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.IP;
 import static com.marcindziedzic.smartparkingsandroid.util.Constants.PORT;
 
+/**
+ * Implementation of the ServiceBinder. Enables creating an agent and bind it to Android App.
+ */
 public class ServiceBinderImpl implements ServiceBinder {
     private final Context context;
     private ServiceConnection serviceConnection;
@@ -74,6 +77,12 @@ public class ServiceBinderImpl implements ServiceBinder {
                 Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Starts container where will be the driver agent.
+     *
+     * @param agentName      Name of the agent
+     * @param loginPresenter Presenter of the login feature.
+     */
     private void startContainer(final String agentName, final LoginPresenter loginPresenter) {
 
         Properties pp = new Properties();
@@ -107,6 +116,13 @@ public class ServiceBinderImpl implements ServiceBinder {
         });
     }
 
+    /**
+     * Starts the agent.
+     *
+     * @param loginPresenter       Presenter of the login feature.
+     * @param nickname             Name of the agent
+     * @param agentStartupCallback Callback invoked when the agent was started.
+     */
     private void startAgent(
             LoginPresenter loginPresenter, final String nickname,
             final RuntimeCallback<AgentController> agentStartupCallback) {
