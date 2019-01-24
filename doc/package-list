@@ -1,0 +1,14 @@
+com.marcindziedzic.smartparkingsandroid
+com.marcindziedzic.smartparkingsandroid.Login
+com.marcindziedzic.smartparkingsandroid.agent
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingChooserRole.subbehaviours
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.ParkingDataCollectorRole.subbehaviours
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole
+com.marcindziedzic.smartparkingsandroid.agent.behaviours.TenantRole.subbehaviours
+com.marcindziedzic.smartparkingsandroid.loginFeature
+com.marcindziedzic.smartparkingsandroid.mapsFeature
+com.marcindziedzic.smartparkingsandroid.ontology
+com.marcindziedzic.smartparkingsandroid.settingsFeature
+com.marcindziedzic.smartparkingsandroid.util
